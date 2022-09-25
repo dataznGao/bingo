@@ -1,0 +1,16 @@
+inputPath: "/Users/misery/GolandProjects/code_fault/mmap"
+outputPath: "/Users/misery/GolandProjects/code_fault/mmap1"
+faultPoints:
+  - faultType: "ConditionInversedFault"
+    locationPattern:
+      - packageP:
+          - name: "util"
+            activationRate: "2/3"
+        structP: "*"
+        methodP:
+          - name: "main"
+            activationRate: "1/2"
+        variableP:
+          - name: "*"
+              activationRate: "1/2"
+    targetValue: "hello world"
