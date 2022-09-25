@@ -1,8 +1,8 @@
 package env
 
 import (
-	"fundrill_code_fault/config"
-	"fundrill_code_fault/constant"
+	"github.com/dataznGao/go_drill/config"
+	"github.com/dataznGao/go_drill/constant"
 	"log"
 	"strings"
 )

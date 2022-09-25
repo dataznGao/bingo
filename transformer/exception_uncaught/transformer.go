@@ -1,8 +1,8 @@
 package exception_uncaught
 
 import (
-	"fundrill_code_fault/config"
-	"fundrill_code_fault/transformer/exception_uncaught/visitor"
+	"github.com/dataznGao/go_drill/config"
+	"github.com/dataznGao/go_drill/transformer/exception_uncaught/visitor"
 	"go/ast"
 )
 

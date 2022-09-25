@@ -1,8 +1,8 @@
 package condition_inversed
 
 import (
-	"fundrill_code_fault/config"
-	"fundrill_code_fault/transformer/condition_inversed/visitor"
+	"github.com/dataznGao/go_drill/config"
+	"github.com/dataznGao/go_drill/transformer/condition_inversed/visitor"
 	"go/ast"
 )
 

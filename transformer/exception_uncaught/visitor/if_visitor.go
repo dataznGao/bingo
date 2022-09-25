@@ -1,7 +1,7 @@
 package visitor
 
 import (
-	"fundrill_code_fault/config"
+	"github.com/dataznGao/go_drill/config"
 	"go/ast"
 )
 

@@ -1,8 +1,8 @@
 package sync
 
 import (
-	"fundrill_code_fault/config"
-	"fundrill_code_fault/transformer/sync/visitor"
+	"github.com/dataznGao/go_drill/config"
+	"github.com/dataznGao/go_drill/transformer/sync/visitor"
 	"go/ast"
 )
 

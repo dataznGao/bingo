@@ -1,8 +1,8 @@
 package value
 
 import (
-	"fundrill_code_fault/config"
-	"fundrill_code_fault/transformer/value/visitor"
+	"github.com/dataznGao/go_drill/config"
+	"github.com/dataznGao/go_drill/transformer/value/visitor"
 	"go/ast"
 )
 

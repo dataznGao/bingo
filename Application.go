@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fundrill_code_fault/code_drill"
-	"fundrill_code_fault/env"
+	"github.com/dataznGao/go_drill/code_drill"
+	"github.com/dataznGao/go_drill/env"
 )
 
 func main() {

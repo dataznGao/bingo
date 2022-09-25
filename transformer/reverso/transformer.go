@@ -1,8 +1,8 @@
 package reverso
 
 import (
-	"fundrill_code_fault/config"
-	"fundrill_code_fault/transformer/reverso/visitor"
+	"github.com/dataznGao/go_drill/config"
+	"github.com/dataznGao/go_drill/transformer/reverso/visitor"
 	"go/ast"
 )
 

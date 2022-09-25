@@ -1,8 +1,8 @@
 package transformer
 
 import (
-	"fundrill_code_fault/config"
-	"fundrill_code_fault/util"
+	"github.com/dataznGao/go_drill/config"
+	"github.com/dataznGao/go_drill/util"
 	"go/ast"
 	"strings"
 )
