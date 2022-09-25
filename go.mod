@@ -1,4 +1,4 @@
-module fundrill_code_fault
+module  github.com/dataznGao/go_drill
 
 go 1.18
 
