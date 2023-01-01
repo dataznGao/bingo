@@ -1,9 +1,11 @@
-package env
+package main
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestFaultEnv_ValueFault(t *testing.T) {
-	var l LocationPattern = "util(1/5).myStruct(1/3).myFunc(1/2).myVariable | main.      .*.*"
+	var l main.LocationPattern = "util(1/5).myStruct(1/3).myFunc(1/2).myVariable | main.      .*.*"
 	l.parse()
 }
 

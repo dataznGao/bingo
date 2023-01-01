@@ -1,10 +1,9 @@
-package code_drill
+package main
 
 import (
 	"github.com/dataznGao/go_drill/config"
 	"github.com/dataznGao/go_drill/constant"
 	"github.com/dataznGao/go_drill/ds"
-	"github.com/dataznGao/go_drill/env"
 	"github.com/dataznGao/go_drill/transformer"
 	"github.com/dataznGao/go_drill/transformer/condition_inversed"
 	"github.com/dataznGao/go_drill/transformer/exception_uncaught"
@@ -21,6 +20,7 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
+	"os/exec"
 )
 
 var Config *config.Configuration
@@ -30,10 +30,10 @@ func init() {
 }
 
 type FaultPerformerFactory struct {
-	_env *env.FaultEnv
+	_env *FaultEnv
 }
 
-func (f *FaultPerformerFactory) SetEnv(env *env.FaultEnv) *FaultPerformerFactory {
+func (f *FaultPerformerFactory) SetEnv(env *FaultEnv) *FaultPerformerFactory {
 	return &FaultPerformerFactory{
 		_env: env,
 	}
@@ -47,16 +47,7 @@ func (f *FaultPerformerFactory) Run() error {
 	return nil
 }
 
-func goCodeYamlDrillEntry() error {
-	conf, err := LoadConfiguration()
-	if err != nil {
-		log.Fatalf("[LoadConfiguration] config file %v is wrong", constant.ConfigFile)
-		return err
-	}
-	return entry(conf)
-}
-
-func goCodeDrillEntry(env *env.FaultEnv) error {
+func goCodeDrillEntry(env *FaultEnv) error {
 	conf := &config.Configuration{
 		InputPath:   env.InputPath,
 		OutputPath:  env.OutputPath,
@@ -69,17 +60,17 @@ func entry(config *config.Configuration) error {
 	var originInputPath = config.InputPath
 	Config = config
 	var err error
-	files, err := LoadPackage(Config.InputPath)
+	files, err := loadPackage(Config.InputPath)
 	if err != nil {
 		return err
 	}
 	gc := make([]string, 0)
 	for filename, file := range files {
 		for _, faultConfig := range Config.FaultPoints {
-			err, newPath, replica, _ := PerformInjure(file, filename, faultConfig)
+			err, newPath, replica, _ := performInjure(file, filename, faultConfig)
 			gc = append(gc, replica)
 			if err != nil {
-				log.Fatalf("[PerformInjure] file: %v injure fault failed, err: %v", filename, err.Error())
+				log.Fatalf("[performInjure] file: %v injure fault failed, err: %v", filename, err.Error())
 			}
 			err = fillPackage(files)
 			if err != nil {
@@ -88,7 +79,7 @@ func entry(config *config.Configuration) error {
 			command := "cd " + config.OutputPath + " && go build"
 
 			_, err = util.Command(command)
-			if err != nil {
+			if err != nil && err.(*exec.ExitError).Stderr != nil {
 				util.Copy(replica, newPath)
 				fset := token.NewFileSet()
 				parseFile, _ := parser.ParseFile(fset, newPath, nil, 0)
@@ -113,8 +104,8 @@ func fillPackage(files map[string]*ds.FileInjure) error {
 	return nil
 }
 
-func PerformInjure(fi *ds.FileInjure, fileName string, config *config.FaultConfig) (error, string, string, *ast.File) {
-	faultTransformer := GetTransformer(fi.File, config)
+func performInjure(fi *ds.FileInjure, fileName string, config *config.FaultConfig) (error, string, string, *ast.File) {
+	faultTransformer := getTransformer(fi.File, config)
 	if faultTransformer == nil {
 		return constant.NewNoFaultTypeError(config.FaultType), "", "", nil
 	}
@@ -136,7 +127,7 @@ func PerformInjure(fi *ds.FileInjure, fileName string, config *config.FaultConfi
 	return nil, newPath, replica, replicaFile
 }
 
-func LoadConfiguration() (*config.Configuration, error) {
+func loadConfiguration() (*config.Configuration, error) {
 	configFile, err := ioutil.ReadFile(constant.ConfigFile)
 	if err != nil {
 		return nil, err
@@ -146,8 +137,8 @@ func LoadConfiguration() (*config.Configuration, error) {
 	return conf, nil
 }
 
-// LoadPackage 加载需要注入的文件夹，返回文件名对应的文件，以及包对应的文件
-func LoadPackage(path string) (map[string]*ds.FileInjure, error) {
+// loadPackage 加载需要注入的文件夹，返回文件名对应的文件，以及包对应的文件
+func loadPackage(path string) (map[string]*ds.FileInjure, error) {
 	m, err := util.LoadAllGoFile(path)
 	if err != nil {
 		return nil, err
@@ -169,7 +160,7 @@ func LoadPackage(path string) (map[string]*ds.FileInjure, error) {
 	return files, nil
 }
 
-func GetTransformer(file *ast.File, config *config.FaultConfig) transformer.Transformer {
+func getTransformer(file *ast.File, config *config.FaultConfig) transformer.Transformer {
 	switch constant.FaultTypeMap[config.FaultType] {
 	case constant.ConditionInversedFault:
 		return &condition_inversed.ConditionInversedTransformer{

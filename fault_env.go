@@ -1,4 +1,4 @@
-package env
+package main
 
 import (
 	"github.com/dataznGao/go_drill/config"
@@ -36,10 +36,10 @@ func (fe *FaultEnv) ValueFault(locationPattern LocationPattern, targetValue inte
 	return fe
 }
 
-func (fe *FaultEnv) ConditionInversedFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *FaultEnv) ConditionUnversedFault(locationPattern LocationPattern) *FaultEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
-		log.Fatalf("[ConditionInversedFault] set fault point failed, err: %v", err.Error())
+		log.Fatalf("[ConditionUnversedFault] set fault point failed, err: %v", err.Error())
 	}
 	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{
 		FaultType:        constant.StrConditionInversedFault,
@@ -52,7 +52,7 @@ func (fe *FaultEnv) ConditionInversedFault(locationPattern LocationPattern) *Fau
 func (fe *FaultEnv) SwitchMissDefaultFault(locationPattern LocationPattern) *FaultEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
-		log.Fatalf("[ConditionInversedFault] set fault point failed, err: %v", err.Error())
+		log.Fatalf("[ConditionUnversedFault] set fault point failed, err: %v", err.Error())
 	}
 	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{
 		FaultType:        constant.StrSwitchMissDefaultFault,
@@ -64,7 +64,7 @@ func (fe *FaultEnv) SwitchMissDefaultFault(locationPattern LocationPattern) *Fau
 func (fe *FaultEnv) NullFault(locationPattern LocationPattern) *FaultEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
-		log.Fatalf("[ConditionInversedFault] set fault point failed, err: %v", err.Error())
+		log.Fatalf("[ConditionUnversedFault] set fault point failed, err: %v", err.Error())
 	}
 	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{
 		FaultType:        constant.StrNullFault,
