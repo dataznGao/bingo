@@ -1,4 +1,4 @@
-package main
+package go_drill
 
 func main() {
 	env := CreateFaultEnv("/Users/misery/GolandProjects/code_fault/scene", "/Users/misery/GolandProjects/code_fault/scene1")

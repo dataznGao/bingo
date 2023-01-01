@@ -1,4 +1,4 @@
-package main
+package go_drill
 
 import (
 	"github.com/dataznGao/go_drill/config"
