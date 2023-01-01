@@ -5,7 +5,7 @@ import (
 )
 
 func TestFaultEnv_ValueFault(t *testing.T) {
-	var l main.LocationPattern = "util(1/5).myStruct(1/3).myFunc(1/2).myVariable | main.      .*.*"
+	var l LocationPattern = "util(1/5).myStruct(1/3).myFunc(1/2).myVariable | main.      .*.*"
 	l.parse()
 }
 
