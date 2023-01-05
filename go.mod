@@ -1,4 +1,4 @@
-module github.com/dataznGao/go_drill
+module github.com/dataznGao/bingo
 
 go 1.18
 

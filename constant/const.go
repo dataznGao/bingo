@@ -31,7 +31,7 @@ const (
 )
 
 const (
-	ConfigFile = "/Users/misery/GolandProjects/code_fault/config.yaml"
+	ConfigFile = "/Users/misery/GolandProjects/bingo/config.yaml"
 )
 
 const (

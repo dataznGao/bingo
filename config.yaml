@@ -1,5 +1,5 @@
-inputPath: "/Users/misery/GolandProjects/code_fault/mmap"
-outputPath: "/Users/misery/GolandProjects/code_fault/mmap1"
+inputPath: "/Users/misery/GolandProjects/bingo/mmap"
+outputPath: "/Users/misery/GolandProjects/bingo/mmap1"
 faultPoints:
   - faultType: "ConditionInversedFault"
     locationPattern:

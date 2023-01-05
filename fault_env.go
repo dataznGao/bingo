@@ -1,8 +1,8 @@
 package go_drill
 
 import (
-	"github.com/dataznGao/go_drill/config"
 	"github.com/dataznGao/go_drill/constant"
+	"github.com/dataznGao/go_drill/core/config"
 	"log"
 	"strings"
 )

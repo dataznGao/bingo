@@ -14,6 +14,8 @@ type TestEn struct {
 }
 
 func init() {
+	id := "fff"
+	println(id)
 	dsn := "root:G2Y2LKXpig@tcp(127.0.0.1:3306)/rw_takeout"
 	//打开数据库链接
 	var err error

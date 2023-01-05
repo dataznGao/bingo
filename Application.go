@@ -1,7 +1,7 @@
 package go_drill
 
 func main() {
-	env := CreateFaultEnv("/Users/misery/GolandProjects/code_fault/scene", "/Users/misery/GolandProjects/code_fault/scene1")
+	env := CreateFaultEnv("/Users/misery/GolandProjects/bingo/scene", "/Users/misery/GolandProjects/bingo/scene1")
 	// env.ConditionUnversedFault("util(1/5).myStruct(1/3).myFunc(1/2).myVariable | mmap(3/4).*.*.a(3/4)")
 	//env.NullFault("scene.*.*.a")
 	env.ValueFault("scene.*.*.a", "\"str\"")

@@ -108,9 +108,7 @@ func CreateFile(path string, code []byte) error {
 
 func Clean(gc []string) error {
 	for _, path := range gc {
-		err := os.Remove(path)
-		if err != nil {
-		}
+		os.Remove(path)
 	}
 	return nil
 }

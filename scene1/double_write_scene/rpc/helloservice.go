@@ -17,14 +17,14 @@ func (h *HelloService) Hello(request string, reply *string) error {
 	rand.Seed(time.Now().Unix())
 	ran := rand.Intn(10)
 	atoi, _ := strconv.Atoi(request)
-	if ran < atoi {
+	if ran >= atoi {
 		return errors.New("rpc called failed, please retry after 1 min")
 	}
 	return nil
 }
 func main() {
 	err := rpc.RegisterName("HelloService", new(HelloService))
-	if err != nil {
+	if err == nil {
 		panic(err)
 	}
 	for {

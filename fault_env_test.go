@@ -10,7 +10,7 @@ func TestFaultEnv_ValueFault(t *testing.T) {
 }
 
 func TestCreateFaultEnv(t *testing.T) {
-	env := CreateFaultEnv("/Users/misery/GolandProjects/code_fault/mmap", "/Users/misery/GolandProjects/code_fault/mmap1")
+	env := CreateFaultEnv("/Users/misery/GolandProjects/bingo/mmap", "/Users/misery/GolandProjects/bingo/mmap1")
 	env.ValueFault("util(1/5).myStruct(1/3).myFunc(1/2).myVariable | main.      .*.*", nil).
 		ValueFault("util(1/5).myStruct(1/3).myFunc(1/2).myVariable", 1)
 
