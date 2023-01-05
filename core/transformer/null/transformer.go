@@ -1,9 +1,9 @@
 package null
 
 import (
-	"github.com/dataznGao/go_drill/core/config"
-	"github.com/dataznGao/go_drill/core/ds"
-	"github.com/dataznGao/go_drill/core/transformer/value/visitor"
+	"github.com/dataznGao/bingo/core/config"
+	"github.com/dataznGao/bingo/core/ds"
+	"github.com/dataznGao/bingo/core/transformer/value/visitor"
 	"go/ast"
 )
 

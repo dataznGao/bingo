@@ -1,9 +1,9 @@
 package switch_miss_default
 
 import (
-	"github.com/dataznGao/go_drill/core/config"
-	"github.com/dataznGao/go_drill/core/ds"
-	"github.com/dataznGao/go_drill/core/transformer/switch_miss_default/visitor"
+	"github.com/dataznGao/bingo/core/config"
+	"github.com/dataznGao/bingo/core/ds"
+	"github.com/dataznGao/bingo/core/transformer/switch_miss_default/visitor"
 	"go/ast"
 )
 

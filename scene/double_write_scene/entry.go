@@ -3,7 +3,7 @@ package double_write_scene
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dataznGao/go_drill/scene/double_write_scene/dal"
+	"github.com/dataznGao/bingo/scene/double_write_scene/dal"
 	"log"
 	"net/rpc"
 )

@@ -1,4 +1,4 @@
-package go_drill
+package bingo
 
 func main() {
 	env := CreateFaultEnv("/Users/misery/GolandProjects/bingo/scene", "/Users/misery/GolandProjects/bingo/scene1")

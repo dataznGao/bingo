@@ -1,7 +1,7 @@
 package double_write_scene
 
 import (
-	"github.com/dataznGao/go_drill/scene/double_write_scene/dal"
+	"github.com/dataznGao/bingo/scene/double_write_scene/dal"
 	"testing"
 )
 

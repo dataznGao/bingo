@@ -1,9 +1,9 @@
-package go_drill
+package bingo
 
 import (
-	"github.com/dataznGao/go_drill/core"
-	"github.com/dataznGao/go_drill/core/config"
-	"github.com/dataznGao/go_drill/core/ds"
+	"github.com/dataznGao/bingo/core"
+	"github.com/dataznGao/bingo/core/config"
+	"github.com/dataznGao/bingo/core/ds"
 	"log"
 )
 

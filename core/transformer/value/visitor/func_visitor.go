@@ -1,9 +1,9 @@
 package visitor
 
 import (
-	"github.com/dataznGao/go_drill/core/config"
-	"github.com/dataznGao/go_drill/core/ds"
-	"github.com/dataznGao/go_drill/core/transformer"
+	"github.com/dataznGao/bingo/core/config"
+	"github.com/dataznGao/bingo/core/ds"
+	"github.com/dataznGao/bingo/core/transformer"
 	"go/ast"
 )
 

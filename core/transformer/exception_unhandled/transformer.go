@@ -1,9 +1,9 @@
 package exception_unhandled
 
 import (
-	"github.com/dataznGao/go_drill/core/config"
-	"github.com/dataznGao/go_drill/core/ds"
-	"github.com/dataznGao/go_drill/core/transformer/exception_unhandled/visitor"
+	"github.com/dataznGao/bingo/core/config"
+	"github.com/dataznGao/bingo/core/ds"
+	"github.com/dataznGao/bingo/core/transformer/exception_unhandled/visitor"
 	"go/ast"
 )
 
