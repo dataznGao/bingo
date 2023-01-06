@@ -115,3 +115,14 @@ func Clean(gc []string) error {
 	}
 	return nil
 }
+
+func InsertFileHead(fileName string, info []byte) error {
+	file, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return err
+	}
+	var buf = make([]byte, 0)
+	buf = append(buf, info...)
+	buf = append(buf, file...)
+	return CreateFile(fileName, buf)
+}

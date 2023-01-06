@@ -7,7 +7,10 @@ import (
 	"go/format"
 	"go/token"
 	"io"
+	"io/ioutil"
+	"log"
 	"os"
+	"regexp"
 )
 
 func GetIfCode(node *ast.IfStmt) (string, error) {
@@ -39,6 +42,32 @@ func GetNodeCode(node ast.Node) string {
 	buffer := bytes.NewBuffer(output)
 	format.Node(buffer, token.NewFileSet(), node)
 	return buffer.String()
+}
+
+func GetBuildInfo(fileName string) []byte {
+	file, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		log.Fatalf("获取file失败, filename: %v", fileName)
+	}
+	fileStr := string(file)
+	resStr := ""
+	reg1 := regexp.MustCompile("//\\s*go:build")
+	indexs := reg1.FindAllIndex(file, -1)
+	reg2 := regexp.MustCompile("//\\s*\\+build")
+	indexs = append(indexs, reg2.FindAllIndex(file, -1)...)
+	n := len(fileStr)
+	for _, index := range indexs {
+		start := index[0]
+		end := start
+		for i := start; i < n; i++ {
+			if i == n-1 || fileStr[i] == '\n' {
+				end = i + 1
+				break
+			}
+		}
+		resStr += fileStr[start:end]
+	}
+	return []byte(resStr)
 }
 
 func GetFileCode(node *ast.File) []byte {

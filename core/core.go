@@ -27,10 +27,18 @@ func init() {
 func FillPackage(files map[string]*ds.File, notGoFiles []string) error {
 	log.Printf("[bingo] INFO ====== 开始填充输出包 ======")
 	for k, v := range files {
+		newPath := util.CompareAndExchange(k, config.Config.OutputPath, config.Config.InputPath)
 		if !v.IsInjured {
 			log.Printf("[bingo] INFO 开始填充输出包, 文件: %v", k)
-			err := util.CreateFile(util.CompareAndExchange(k, config.Config.OutputPath, config.Config.InputPath),
-				util.GetFileCode(v.File))
+			err := util.CreateFile(newPath, util.GetFileCode(v.File))
+			if err != nil {
+				return err
+			}
+		}
+		comment := util.GetBuildInfo(k)
+		if len(comment) != 0 {
+			log.Printf("[bingo] INFO 开始添加build信息, 文件: %v, \nbuild_info: %v", k, string(comment))
+			err := util.InsertFileHead(newPath, comment)
 			if err != nil {
 				return err
 			}
