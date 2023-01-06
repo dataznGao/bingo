@@ -43,7 +43,7 @@ func entry(conf *config.Configuration) error {
 	log.Printf("[bingo] INFO ======= 开始变异 ========")
 	for filename, file := range files {
 		for _, faultConfig := range conf.FaultPoints {
-			log.Printf("[bingo] INFO 本次变异算子: %v", faultConfig.FaultType)
+			log.Printf("[bingo] INFO 本次变异文件: %v, 变异算子: %v", filename, faultConfig.FaultType)
 			err := core.PerformInjure(file, faultConfig)
 			if err != nil {
 				log.Fatalf("[bingo] FATAL file: %v injure fault failed, err: %v", filename, err.Error())

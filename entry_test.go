@@ -15,7 +15,7 @@ func TestFaultPerformerFactory_Run(t *testing.T) {
 	//env.ValueFault("*.*.*.id", "\"str\"")
 	//env.AttributeReversoFault("scene.*.*.c", 10)
 
-	//env.SyncFault("rpc_scene.*.*.*")
+	env.SyncFault("*.*.*.*")
 	f := FaultPerformerFactory{}
 	err := f.SetEnv(env).Run()
 	if err != nil {
