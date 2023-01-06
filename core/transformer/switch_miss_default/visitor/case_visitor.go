@@ -1,6 +1,7 @@
 package visitor
 
 import (
+	"fmt"
 	"github.com/dataznGao/bingo/core/config"
 	"github.com/dataznGao/bingo/core/ds"
 	"github.com/dataznGao/bingo/core/transformer"
@@ -27,7 +28,7 @@ func (v *SwitchMissDefaultCaseVisitor) Visit(node ast.Node) ast.Visitor {
 		}
 		if transformer.VariableCanInjure(v.lp, vari) {
 			deleteBranch := -1
-			log.Printf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(ss))
+			lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(ss))
 			for i, stmt := range ss.Body.List {
 				if cc, ok := stmt.(*ast.CaseClause); ok {
 					if cc.List == nil {
@@ -45,9 +46,9 @@ func (v *SwitchMissDefaultCaseVisitor) Visit(node ast.Node) ast.Visitor {
 				if newPath, has := transformer.HasRunError(v.File); has {
 					ss.Body.List = replica
 					transformer.CreateFile(v.File)
-					log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(ss))
 				} else {
-					log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(ss))
+					log.Printf(lo)
+					log.Printf("[bingo] INFO 变异位置: %v\n变异为: \n%v\n", newPath, util.GetNodeCode(ss))
 				}
 			}
 		}

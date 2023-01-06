@@ -1,6 +1,7 @@
 package visitor
 
 import (
+	"fmt"
 	"github.com/dataznGao/bingo/core/config"
 	"github.com/dataznGao/bingo/core/ds"
 	"github.com/dataznGao/bingo/core/transformer"
@@ -19,8 +20,7 @@ func (v *ConditionInversedCondVisitor) Visit(node ast.Node) ast.Visitor {
 	switch node.(type) {
 	case *ast.BinaryExpr:
 		if transformer.VariablesCanInjure(v.lp, transformer.GetVariable(node.(*ast.BinaryExpr))) {
-			log.Printf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(node))
-			deepNode := *node.(*ast.BinaryExpr)
+			lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(node))
 			op := node.(*ast.BinaryExpr).Op
 			switch op {
 			case token.LAND:
@@ -40,13 +40,14 @@ func (v *ConditionInversedCondVisitor) Visit(node ast.Node) ast.Visitor {
 			case token.EQL:
 				op = token.NEQ
 			}
+			rep := node.(*ast.BinaryExpr).Op
 			node.(*ast.BinaryExpr).Op = op
 			if newPath, has := transformer.HasRunError(v.File); has {
-				node = &deepNode
+				node.(*ast.BinaryExpr).Op = rep
 				transformer.CreateFile(v.File)
-				log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(node))
 			} else {
-				log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(node))
+				log.Printf(lo)
+				log.Printf("[bingo] INFO 变异位置: %v\n变异为: \n%v\n", newPath, util.GetNodeCode(node))
 			}
 		}
 

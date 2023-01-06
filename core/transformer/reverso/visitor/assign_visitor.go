@@ -1,6 +1,7 @@
 package visitor
 
 import (
+	"fmt"
 	"github.com/dataznGao/bingo/core/config"
 	"github.com/dataznGao/bingo/core/ds"
 	"github.com/dataznGao/bingo/core/transformer"
@@ -23,17 +24,16 @@ func (v *ReversoAssignVisitor) Visit(node ast.Node) ast.Visitor {
 			case *ast.SelectorExpr:
 				se := lh.(*ast.SelectorExpr)
 				if transformer.VariableCanInjure(v.lp, se.Sel.Name) {
-					log.Printf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(lh))
-
+					lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(lh))
 					if rh, ok := stmt.Rhs[i].(*ast.BasicLit); ok {
 						value := rh.Value
 						rh.Value = util.StrVal(v.value) + "*" + rh.Value
 						if newPath, has := transformer.HasRunError(v.File); has {
 							rh.Value = value
 							transformer.CreateFile(v.File)
-							log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(lh))
 						} else {
-							log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(lh))
+							log.Printf(lo)
+							log.Printf("[bingo] INFO 变异位置: %v\n变异为: \n%v\n", newPath, util.GetNodeCode(lh))
 						}
 					}
 
@@ -41,15 +41,16 @@ func (v *ReversoAssignVisitor) Visit(node ast.Node) ast.Visitor {
 			case *ast.Ident:
 				se := lh.(*ast.Ident)
 				if transformer.VariableCanInjure(v.lp, se.Name) {
+					lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(lh))
 					if rh, ok := stmt.Rhs[i].(*ast.BasicLit); ok {
 						value := rh.Value
 						rh.Value = util.StrVal(v.value) + "*" + rh.Value
 						if newPath, has := transformer.HasRunError(v.File); has {
 							rh.Value = value
 							transformer.CreateFile(v.File)
-							log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(lh))
 						} else {
-							log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(lh))
+							log.Printf(lo)
+							log.Printf("[bingo] INFO 变异位置: %v\n变异为: \n%v\n", newPath, util.GetNodeCode(lh))
 						}
 					}
 
