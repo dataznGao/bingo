@@ -23,7 +23,9 @@ func (v *ExceptionUncaughtFuncVisitor) Visit(node ast.Node) ast.Visitor {
 		can := transformer.FunCanInjure(v.lp, structs, decl.Name.Name)
 		if can {
 			// 对函数段中不同的stmt进行单独处理
-			for i, stmt := range decl.Body.List {
+			n := len(decl.Body.List)
+			for i := n - 1; i >= 0; i-- {
+				stmt := decl.Body.List[i]
 				if ifStmt, ok := stmt.(*ast.IfStmt); ok {
 					visitor := &ExceptionUncaughtIfVisitor{
 						lp:   v.lp,
