@@ -31,7 +31,7 @@ func (v *SyncGoVisitor) Visit(node ast.Node) ast.Visitor {
 				transformer.CreateFile(v.File)
 				log.Printf("[bingo] INFO 变异位置: %v, 本次变异失败", util.GetNodeCode(stmt))
 			} else {
-				log.Printf("[bingo] INFO 成功变异为: %v", util.GetNodeCode(stmt))
+				log.Printf("[bingo] INFO 成功变异为: %v", util.GetNodeCode(v.call))
 			}
 		}
 	}
