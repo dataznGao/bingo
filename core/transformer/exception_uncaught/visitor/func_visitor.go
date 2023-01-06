@@ -31,7 +31,11 @@ func (v *ExceptionUncaughtFuncVisitor) Visit(node ast.Node) ast.Visitor {
 					}
 					ast.Walk(visitor, ifStmt)
 					if visitor.can {
-						decl.Body.List = append(decl.Body.List[0:i], decl.Body.List[i+1:]...)
+						if i == len(decl.Body.List)-1 {
+							decl.Body.List = decl.Body.List[0:i]
+						} else {
+							decl.Body.List = append(decl.Body.List[0:i], decl.Body.List[i+1:]...)
+						}
 					}
 				} else if caseStmt, ok := stmt.(*ast.SwitchStmt); ok {
 					visitor := &ExceptionUncaughtIfVisitor{

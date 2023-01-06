@@ -29,7 +29,7 @@ func FillPackage(files map[string]*ds.File, notGoFiles []string) error {
 	for k, v := range files {
 		newPath := util.CompareAndExchange(k, config.Config.OutputPath, config.Config.InputPath)
 		if !v.IsInjured {
-			log.Printf("[bingo] INFO 开始填充输出包, 文件: %v", k)
+			log.Printf("[bingo] INFO 填充输出包, 文件: %v", k)
 			err := util.CreateFile(newPath, util.GetFileCode(v.File))
 			if err != nil {
 				return err
@@ -37,7 +37,7 @@ func FillPackage(files map[string]*ds.File, notGoFiles []string) error {
 		}
 		comment := util.GetBuildInfo(k)
 		if len(comment) != 0 {
-			log.Printf("[bingo] INFO 开始添加build信息, 文件: %v, \nbuild_info: %v", k, string(comment))
+			log.Printf("[bingo] INFO 添加build信息, 文件: %v, \nbuild_info: %v", k, string(comment))
 			err := util.InsertFileHead(newPath, comment)
 			if err != nil {
 				return err
@@ -45,7 +45,7 @@ func FillPackage(files map[string]*ds.File, notGoFiles []string) error {
 		}
 	}
 	for _, file := range notGoFiles {
-		log.Printf("[bingo] INFO 开始填充输出包, 文件: %v", file)
+		log.Printf("[bingo] INFO 填充输出包, 文件: %v", file)
 		readFile, err := ioutil.ReadFile(file)
 		if err != nil {
 			return err
@@ -56,6 +56,7 @@ func FillPackage(files map[string]*ds.File, notGoFiles []string) error {
 			return err
 		}
 	}
+	log.Printf("[bingo] INFO ====== 填充输出包完毕 ======")
 	return nil
 }
 
