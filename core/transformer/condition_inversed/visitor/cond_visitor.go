@@ -19,7 +19,7 @@ func (v *ConditionInversedCondVisitor) Visit(node ast.Node) ast.Visitor {
 	switch node.(type) {
 	case *ast.BinaryExpr:
 		if transformer.VariablesCanInjure(v.lp, transformer.GetVariable(node.(*ast.BinaryExpr))) {
-			log.Printf("[bingo] INFO 变异位置: %v, 本次变异失败", util.GetNodeCode(node))
+			log.Printf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(node))
 			deepNode := *node.(*ast.BinaryExpr)
 			op := node.(*ast.BinaryExpr).Op
 			switch op {
@@ -41,12 +41,12 @@ func (v *ConditionInversedCondVisitor) Visit(node ast.Node) ast.Visitor {
 				op = token.NEQ
 			}
 			node.(*ast.BinaryExpr).Op = op
-			if transformer.HasRunError(v.File) {
+			if newPath, has := transformer.HasRunError(v.File); has {
 				node = &deepNode
 				transformer.CreateFile(v.File)
-				log.Printf("[bingo] INFO 变异位置: %v, 本次变异失败", util.GetNodeCode(node))
+				log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(node))
 			} else {
-				log.Printf("[bingo] INFO 成功变异为: %v", util.GetNodeCode(node))
+				log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(node))
 			}
 		}
 

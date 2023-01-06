@@ -26,9 +26,8 @@ func (v *SwitchMissDefaultCaseVisitor) Visit(node ast.Node) ast.Visitor {
 			vari = ss.Tag.(*ast.SelectorExpr).Sel.Name
 		}
 		if transformer.VariableCanInjure(v.lp, vari) {
-			deepNode := *ss
 			deleteBranch := -1
-			log.Printf("[bingo] INFO 变异位置: %v", util.GetNodeCode(ss))
+			log.Printf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(ss))
 			for i, stmt := range ss.Body.List {
 				if cc, ok := stmt.(*ast.CaseClause); ok {
 					if cc.List == nil {
@@ -37,14 +36,19 @@ func (v *SwitchMissDefaultCaseVisitor) Visit(node ast.Node) ast.Visitor {
 				}
 			}
 			if deleteBranch != -1 {
-				ss.Body.List = append(ss.Body.List[0:deleteBranch], ss.Body.List[deleteBranch+1:]...)
-			}
-			if transformer.HasRunError(v.File) {
-				ss = &deepNode
-				transformer.CreateFile(v.File)
-				log.Printf("[bingo] INFO 变异位置: %v, 本次变异失败", util.GetNodeCode(ss))
-			} else {
-				log.Printf("[bingo] INFO 成功变异为: %v", util.GetNodeCode(ss))
+				replica := util.CopyStmtList(ss.Body.List)
+				if deleteBranch == len(ss.Body.List)-1 {
+					ss.Body.List = ss.Body.List[0:deleteBranch]
+				} else {
+					ss.Body.List = append(ss.Body.List[0:deleteBranch], ss.Body.List[deleteBranch+1:]...)
+				}
+				if newPath, has := transformer.HasRunError(v.File); has {
+					ss.Body.List = replica
+					transformer.CreateFile(v.File)
+					log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(ss))
+				} else {
+					log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(ss))
+				}
 			}
 		}
 	}

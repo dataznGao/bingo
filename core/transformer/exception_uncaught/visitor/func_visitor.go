@@ -4,7 +4,9 @@ import (
 	"github.com/dataznGao/bingo/core/config"
 	"github.com/dataznGao/bingo/core/ds"
 	"github.com/dataznGao/bingo/core/transformer"
+	"github.com/dataznGao/bingo/util"
 	"go/ast"
+	"log"
 )
 
 type ExceptionUncaughtFuncVisitor struct {
@@ -33,10 +35,18 @@ func (v *ExceptionUncaughtFuncVisitor) Visit(node ast.Node) ast.Visitor {
 					}
 					ast.Walk(visitor, ifStmt)
 					if visitor.can {
+						replica := util.CopyStmtList(decl.Body.List)
 						if i == len(decl.Body.List)-1 {
 							decl.Body.List = decl.Body.List[0:i]
 						} else {
 							decl.Body.List = append(decl.Body.List[0:i], decl.Body.List[i+1:]...)
+						}
+						if newPath, has := transformer.HasRunError(v.File); has {
+							decl.Body.List = replica
+							transformer.CreateFile(v.File)
+							log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(stmt))
+						} else {
+							log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(stmt))
 						}
 					}
 				} else if caseStmt, ok := stmt.(*ast.SwitchStmt); ok {

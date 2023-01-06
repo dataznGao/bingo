@@ -101,3 +101,9 @@ func Copy(src, dst string) (int64, error) {
 	nBytes, err := io.Copy(destination, source)
 	return nBytes, err
 }
+
+func CopyStmtList(stmt []ast.Stmt) []ast.Stmt {
+	replica := make([]ast.Stmt, len(stmt))
+	copy(replica, stmt)
+	return replica
+}

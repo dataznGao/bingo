@@ -23,30 +23,36 @@ func (v *ReversoAssignVisitor) Visit(node ast.Node) ast.Visitor {
 			case *ast.SelectorExpr:
 				se := lh.(*ast.SelectorExpr)
 				if transformer.VariableCanInjure(v.lp, se.Sel.Name) {
-					log.Printf("[bingo] INFO 变异位置: %v", util.GetNodeCode(lh))
-					replicaNode := *stmt
+					log.Printf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(lh))
+
 					if rh, ok := stmt.Rhs[i].(*ast.BasicLit); ok {
+						value := rh.Value
 						rh.Value = util.StrVal(v.value) + "*" + rh.Value
+						if newPath, has := transformer.HasRunError(v.File); has {
+							rh.Value = value
+							transformer.CreateFile(v.File)
+							log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(lh))
+						} else {
+							log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(lh))
+						}
 					}
-					if transformer.HasRunError(v.File) {
-						stmt = &replicaNode
-						transformer.CreateFile(v.File)
-						log.Printf("[bingo] INFO 变异位置: %v, 本次变异失败", util.GetNodeCode(lh))
-					} else {
-						log.Printf("[bingo] INFO 成功变异为: %v", util.GetNodeCode(lh))
-					}
+
 				}
 			case *ast.Ident:
 				se := lh.(*ast.Ident)
 				if transformer.VariableCanInjure(v.lp, se.Name) {
-					replicaNode := *stmt
 					if rh, ok := stmt.Rhs[i].(*ast.BasicLit); ok {
+						value := rh.Value
 						rh.Value = util.StrVal(v.value) + "*" + rh.Value
+						if newPath, has := transformer.HasRunError(v.File); has {
+							rh.Value = value
+							transformer.CreateFile(v.File)
+							log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(lh))
+						} else {
+							log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(lh))
+						}
 					}
-					if transformer.HasRunError(v.File) {
-						stmt = &replicaNode
-						transformer.CreateFile(v.File)
-					}
+
 				}
 			}
 		}

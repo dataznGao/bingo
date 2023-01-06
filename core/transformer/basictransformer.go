@@ -5,7 +5,6 @@ import (
 	"github.com/dataznGao/bingo/core/ds"
 	"github.com/dataznGao/bingo/util"
 	"go/ast"
-	"os/exec"
 	"strings"
 )
 
@@ -85,26 +84,39 @@ func GetVariable(node *ast.BinaryExpr) []string {
 	return res
 }
 
-func HasRunError(file *ds.File) bool {
-	if file.IsInjured {
+func HasRunError(file *ds.File) (string, bool) {
+	if file.IsInjured && file.InputPath != file.OutputPath {
+		file.OriInputPath = file.InputPath
 		file.InputPath = file.OutputPath
 	}
+
 	err := CreateFile(file)
 	if err != nil {
 		panic(err)
 	}
-	command := "cd " + file.OutputPath + " && go build"
+	newPath := ""
+	if file.InputPath == file.OutputPath {
+		newPath = util.CompareAndExchange(file.FileName, file.OutputPath, file.OriInputPath)
+	} else {
+		newPath = util.CompareAndExchange(file.FileName, file.OutputPath, file.InputPath)
+	}
+	command := "cd " + util.GetFather(newPath) + " && go build"
 	_, err = util.Command(command)
-	if err != nil && err.(*exec.ExitError).Stderr != nil {
-		return true
+	if err != nil {
+		return newPath, true
 	}
 	file.IsInjured = true
-	return false
+	return newPath, false
 }
 
 func CreateFile(file *ds.File) error {
 	code := util.GetFileCode(file.File)
-	newPath := util.CompareAndExchange(file.FileName, file.OutputPath, file.InputPath)
+	newPath := ""
+	if file.InputPath == file.OutputPath {
+		newPath = util.CompareAndExchange(file.FileName, file.OutputPath, file.OriInputPath)
+	} else {
+		newPath = util.CompareAndExchange(file.FileName, file.OutputPath, file.InputPath)
+	}
 	err := util.CreateFile(newPath, code)
 	return err
 }

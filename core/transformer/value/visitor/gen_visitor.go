@@ -25,19 +25,26 @@ func (v *ValueGenVisitor) Visit(node ast.Node) ast.Visitor {
 					if name.Name == v.lp.VariableP.Name {
 						can := util.CanPerform(v.lp.VariableP.ActivationRate)
 						if can {
-							deepNode := *sp
-							log.Printf("[bingo] INFO 变异位置: %v", util.GetNodeCode(sp))
+							log.Printf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(sp))
 							if sp.Values == nil {
 								sp.Values = []ast.Expr{ast.NewIdent(util.StrVal(v.value))}
+								if newPath, has := transformer.HasRunError(v.File); has {
+									sp.Values = nil
+									transformer.CreateFile(v.File)
+									log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(sp))
+								} else {
+									log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(sp))
+								}
 							} else if ident, ok := sp.Values[i].(*ast.Ident); ok {
+								nam := ident.Name
 								ident.Name = util.StrVal(v.value)
-							}
-							if transformer.HasRunError(v.File) {
-								sp = &deepNode
-								transformer.CreateFile(v.File)
-								log.Printf("[bingo] INFO 变异位置: %v, 本次变异失败", util.GetNodeCode(sp))
-							} else {
-								log.Printf("[bingo] INFO 成功变异为: %v", util.GetNodeCode(sp))
+								if newPath, has := transformer.HasRunError(v.File); has {
+									ident.Name = nam
+									transformer.CreateFile(v.File)
+									log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(sp))
+								} else {
+									log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(sp))
+								}
 							}
 						}
 					}

@@ -22,33 +22,33 @@ func (v *ValueAssignVisitor) Visit(node ast.Node) ast.Visitor {
 			case *ast.SelectorExpr:
 				se := lh.(*ast.SelectorExpr)
 				if transformer.VariableCanInjure(v.lp, se.Sel.Name) {
-					log.Printf("[bingo] INFO 变异位置: %v", util.GetNodeCode(se))
-					deepNode := *se
 					if rh, ok := stmt.Rhs[i].(*ast.BasicLit); ok {
+						log.Printf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(se))
+						value := rh.Value
 						rh.Value = util.StrVal(v.value)
-					}
-					if transformer.HasRunError(v.File) {
-						se = &deepNode
-						transformer.CreateFile(v.File)
-						log.Printf("[bingo] INFO 变异位置: %v, 本次变异失败", util.GetNodeCode(se))
-					} else {
-						log.Printf("[bingo] INFO 成功变异为: %v", util.GetNodeCode(se))
+						if newPath, has := transformer.HasRunError(v.File); has {
+							rh.Value = value
+							transformer.CreateFile(v.File)
+							log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(se))
+						} else {
+							log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(se))
+						}
 					}
 				}
 			case *ast.Ident:
 				se := lh.(*ast.Ident)
 				if transformer.VariableCanInjure(v.lp, se.Name) {
-					log.Printf("[bingo] INFO 变异位置: %v", util.GetNodeCode(se))
-					deepNode := *se
 					if rh, ok := stmt.Rhs[i].(*ast.BasicLit); ok {
+						log.Printf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(se))
+						value := rh.Value
 						rh.Value = util.StrVal(v.value)
-					}
-					if transformer.HasRunError(v.File) {
-						se = &deepNode
-						transformer.CreateFile(v.File)
-						log.Printf("[bingo] INFO 变异位置: %v, 本次变异失败", util.GetNodeCode(se))
-					} else {
-						log.Printf("[bingo] INFO 成功变异为: %v", util.GetNodeCode(se))
+						if newPath, has := transformer.HasRunError(v.File); has {
+							rh.Value = value
+							transformer.CreateFile(v.File)
+							log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(se))
+						} else {
+							log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(se))
+						}
 					}
 				}
 			}

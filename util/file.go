@@ -127,3 +127,14 @@ func InsertFileHead(fileName string, info []byte) error {
 	buf = append(buf, file...)
 	return CreateFile(fileName, buf)
 }
+func GetFather(fileName string) string {
+	n := len(fileName)
+	end := n
+	for i := n - 1; i >= 0; i-- {
+		if fileName[i] == '/' {
+			end = i
+			break
+		}
+	}
+	return fileName[:end]
+}

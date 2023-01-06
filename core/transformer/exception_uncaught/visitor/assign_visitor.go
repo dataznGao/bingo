@@ -22,15 +22,16 @@ func (v *ExceptionUncaughtAssignVisitor) Visit(node ast.Node) ast.Visitor {
 			case *ast.Ident:
 				se := lh.(*ast.Ident)
 				if util.CanPerform(v.lp.VariableP.ActivationRate) {
-					log.Printf("[bingo] INFO 变异位置: %v", util.GetNodeCode(lh))
-					deepNode := *lh.(*ast.Ident)
-					se.Name = "_"
-					if transformer.HasRunError(v.File) {
-						se = &deepNode
-						transformer.CreateFile(v.File)
-						log.Printf("[bingo] INFO 变异位置: %v, 本次变异失败", util.GetNodeCode(lh))
-					} else {
-						log.Printf("[bingo] INFO 成功变异为: %v", util.GetNodeCode(lh))
+					if se.Name == "err" {
+						log.Printf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(stmt))
+						se.Name = "_"
+						if newPath, has := transformer.HasRunError(v.File); has {
+							se.Name = "err"
+							transformer.CreateFile(v.File)
+							log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(stmt))
+						} else {
+							log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(stmt))
+						}
 					}
 				}
 

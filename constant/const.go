@@ -26,7 +26,7 @@ const (
 	StrAttributeReversoFault      = "AttributeReversoFault"
 	StrSwitchMissDefaultFault     = "SwitchMissDefaultFault"
 	StrConditionBorderFault       = "ConditionBorderFault"
-	StrConditionInversedFault     = "ConditionUnversedFault"
+	StrConditionInversedFault     = "ConditionInversedFault"
 	StrSyncFault                  = "SyncFault"
 )
 

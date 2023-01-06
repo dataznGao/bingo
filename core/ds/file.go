@@ -8,9 +8,10 @@ type FileInjure struct {
 }
 
 type File struct {
-	File       *ast.File
-	FileName   string
-	InputPath  string
-	OutputPath string
-	IsInjured  bool
+	File         *ast.File
+	FileName     string
+	InputPath    string
+	OutputPath   string
+	IsInjured    bool
+	OriInputPath string
 }

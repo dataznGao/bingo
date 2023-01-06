@@ -46,7 +46,7 @@ func entry(conf *config.Configuration) error {
 			log.Printf("[bingo] INFO 本次变异算子: %v", faultConfig.FaultType)
 			err := core.PerformInjure(file, faultConfig)
 			if err != nil {
-				log.Fatalf("[performInjure] file: %v injure fault failed, err: %v", filename, err.Error())
+				log.Fatalf("[bingo] FATAL file: %v injure fault failed, err: %v", filename, err.Error())
 			}
 		}
 	}

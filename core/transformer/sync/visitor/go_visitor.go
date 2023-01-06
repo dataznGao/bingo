@@ -21,17 +21,16 @@ func (v *SyncGoVisitor) Visit(node ast.Node) ast.Visitor {
 	case *ast.GoStmt:
 		if transformer.VariablesCanInjure(v.lp, []string{"*"}) {
 			stmt := node.(*ast.GoStmt)
-			log.Printf("[bingo] INFO 变异位置: %v", util.GetNodeCode(stmt))
-			deepNode := *stmt
+			log.Printf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(stmt))
 			var token token.Pos
 			stmt.Go = token
 			v.call = stmt.Call
-			if transformer.HasRunError(v.File) {
-				stmt = &deepNode
+			if newPath, has := transformer.HasRunError(v.File); has {
+				v.call = nil
 				transformer.CreateFile(v.File)
-				log.Printf("[bingo] INFO 变异位置: %v, 本次变异失败", util.GetNodeCode(stmt))
+				log.Printf("[bingo] INFO 变异位置: %v\n%v\n本次变异失败\n", newPath, util.GetNodeCode(stmt))
 			} else {
-				log.Printf("[bingo] INFO 成功变异为: %v", util.GetNodeCode(v.call))
+				log.Printf("[bingo] INFO 变异位置: %v\n成功变异为: \n%v\n", newPath, util.GetNodeCode(v.call))
 			}
 		}
 	}
