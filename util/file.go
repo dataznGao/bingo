@@ -123,6 +123,7 @@ func InsertFileHead(fileName string, info []byte) error {
 	}
 	var buf = make([]byte, 0)
 	buf = append(buf, info...)
+	buf = append(buf, '\n')
 	buf = append(buf, file...)
 	return CreateFile(fileName, buf)
 }
