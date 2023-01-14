@@ -18,7 +18,6 @@ type ReversoAssignVisitor struct {
 
 func (v *ReversoAssignVisitor) Visit(node ast.Node) ast.Visitor {
 	if stmt, ok := node.(*ast.AssignStmt); ok {
-
 		for i, lh := range stmt.Lhs {
 			switch lh.(type) {
 			case *ast.SelectorExpr:
@@ -36,7 +35,6 @@ func (v *ReversoAssignVisitor) Visit(node ast.Node) ast.Visitor {
 							log.Printf("[bingo] INFO 变异位置: %v\n变异为: \n%v\n", newPath, util.GetNodeCode(lh))
 						}
 					}
-
 				}
 			case *ast.Ident:
 				se := lh.(*ast.Ident)
@@ -53,7 +51,6 @@ func (v *ReversoAssignVisitor) Visit(node ast.Node) ast.Visitor {
 							log.Printf("[bingo] INFO 变异位置: %v\n变异为: \n%v\n", newPath, util.GetNodeCode(lh))
 						}
 					}
-
 				}
 			}
 		}

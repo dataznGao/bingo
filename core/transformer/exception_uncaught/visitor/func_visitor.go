@@ -25,15 +25,11 @@ func (v *ExceptionUncaughtFuncVisitor) Visit(node ast.Node) ast.Visitor {
 		}
 		can := transformer.FunCanInjure(v.lp, structs, decl.Name.Name)
 		if can {
-			// 对函数段中不同的stmt进行单独处理
 			n := len(decl.Body.List)
 			for i := n - 1; i >= 0; i-- {
 				stmt := decl.Body.List[i]
 				if ifStmt, ok := stmt.(*ast.IfStmt); ok {
-					visitor := &ExceptionUncaughtIfVisitor{
-						lp:   v.lp,
-						File: v.File,
-					}
+					visitor := &ExceptionUncaughtIfVisitor{lp: v.lp, File: v.File}
 					ast.Walk(visitor, ifStmt)
 					if visitor.can {
 						lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(decl))
@@ -52,16 +48,10 @@ func (v *ExceptionUncaughtFuncVisitor) Visit(node ast.Node) ast.Visitor {
 						}
 					}
 				} else if caseStmt, ok := stmt.(*ast.SwitchStmt); ok {
-					visitor := &ExceptionUncaughtIfVisitor{
-						lp:   v.lp,
-						File: v.File,
-					}
+					visitor := &ExceptionUncaughtIfVisitor{lp: v.lp, File: v.File}
 					ast.Walk(visitor, caseStmt)
 				} else if asignStmt, ok := stmt.(*ast.AssignStmt); ok {
-					visitor := &ExceptionUncaughtAssignVisitor{
-						lp:   v.lp,
-						File: v.File,
-					}
+					visitor := &ExceptionUncaughtAssignVisitor{lp: v.lp, File: v.File}
 					ast.Walk(visitor, asignStmt)
 				}
 			}

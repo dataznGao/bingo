@@ -17,7 +17,6 @@ func CompareAndExchange(oldPath, newPath, inputPath string) string {
 	}
 	return ""
 }
-
 func CompareAndExchangeTestPath(oldPath, newPath, inputPath string) string {
 	if strings.HasPrefix(oldPath, inputPath) {
 		replace := strings.Replace(oldPath, inputPath, newPath, 1)
@@ -25,7 +24,6 @@ func CompareAndExchangeTestPath(oldPath, newPath, inputPath string) string {
 	}
 	return ""
 }
-
 func Contains(elem string, elems []string) bool {
 	if elem == "*" {
 		return true
@@ -37,7 +35,6 @@ func Contains(elem string, elems []string) bool {
 	}
 	return false
 }
-
 func ShowLocatePackage(elem string, lp []*config.LocationPatternP) []*config.LocationPatternP {
 	res := make([]*config.LocationPatternP, 0)
 	elem = strings.TrimSpace(elem)
@@ -49,7 +46,6 @@ func ShowLocatePackage(elem string, lp []*config.LocationPatternP) []*config.Loc
 	}
 	return res
 }
-
 func ShowLocateStruct(elem string, lp []*config.LocationPatternP) []*config.LocationPatternP {
 	res := make([]*config.LocationPatternP, 0)
 	elem = strings.TrimSpace(elem)
@@ -61,7 +57,6 @@ func ShowLocateStruct(elem string, lp []*config.LocationPatternP) []*config.Loca
 	}
 	return res
 }
-
 func ShowLocateMethod(elem string, lp []*config.LocationPatternP) []*config.LocationPatternP {
 	res := make([]*config.LocationPatternP, 0)
 	elem = strings.TrimSpace(elem)
@@ -73,7 +68,6 @@ func ShowLocateMethod(elem string, lp []*config.LocationPatternP) []*config.Loca
 	}
 	return res
 }
-
 func ShowLocateVariable(elem string, lp []*config.LocationPatternP) []*config.LocationPatternP {
 	res := make([]*config.LocationPatternP, 0)
 	elem = strings.TrimSpace(elem)
@@ -85,7 +79,6 @@ func ShowLocateVariable(elem string, lp []*config.LocationPatternP) []*config.Lo
 	}
 	return res
 }
-
 func CanPerform(p string) bool {
 	var (
 		err error
@@ -117,4 +110,8 @@ func CanPerform(p string) bool {
 	} else {
 		return true
 	}
+}
+func Time2Str(t time.Time) string {
+	timeLayoutStr := "2006-01-02 15:04:05"
+	return t.Format(timeLayoutStr)
 }

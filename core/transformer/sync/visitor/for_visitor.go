@@ -22,11 +22,7 @@ func (v *SyncForVisitor) Visit(node ast.Node) ast.Visitor {
 			switch stmt.(type) {
 			case *ast.GoStmt:
 				stm := stmt.(*ast.GoStmt)
-				goVisitor := &SyncGoVisitor{
-					lp:   v.lp,
-					call: nil,
-					File: v.File,
-				}
+				goVisitor := &SyncGoVisitor{lp: v.lp, call: nil, File: v.File}
 				ast.Walk(goVisitor, stm)
 				if goVisitor.call != nil {
 					lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(stmt))
@@ -46,5 +42,4 @@ func (v *SyncForVisitor) Visit(node ast.Node) ast.Visitor {
 		}
 	}
 	return v
-
 }

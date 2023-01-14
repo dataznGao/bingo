@@ -1,8 +1,6 @@
 package util
 
-type Queue[T interface{}] struct {
-	elems []T
-}
+type Queue[T interface{}] struct{ elems []T }
 
 func (q *Queue[T]) Offer(elem T) {
 	if q.elems == nil {
@@ -10,7 +8,6 @@ func (q *Queue[T]) Offer(elem T) {
 	}
 	q.elems = append(q.elems, elem)
 }
-
 func (q *Queue[T]) Poll() T {
 	var a T
 	if q.IsEmpty() {
@@ -20,7 +17,6 @@ func (q *Queue[T]) Poll() T {
 	q.elems = q.elems[1:]
 	return elem
 }
-
 func (q *Queue[T]) IsEmpty() bool {
 	return len(q.elems) == 0
 }

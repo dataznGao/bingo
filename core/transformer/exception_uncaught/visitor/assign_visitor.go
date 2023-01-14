@@ -35,7 +35,6 @@ func (v *ExceptionUncaughtAssignVisitor) Visit(node ast.Node) ast.Visitor {
 						}
 					}
 				}
-
 			}
 		}
 	}

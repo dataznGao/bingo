@@ -18,22 +18,13 @@ func (v *ReversoForVisitor) Visit(node ast.Node) ast.Visitor {
 			switch stmt.(type) {
 			case *ast.AssignStmt:
 				stmt := stmt.(*ast.AssignStmt)
-				visitor := &ReversoAssignVisitor{
-					lp:    v.lp,
-					value: v.value,
-					File:  v.File,
-				}
+				visitor := &ReversoAssignVisitor{lp: v.lp, value: v.value, File: v.File}
 				ast.Walk(visitor, stmt)
 			}
 		}
 	} else if fs, ok := node.(*ast.AssignStmt); ok {
-		visitor := &ReversoAssignVisitor{
-			lp:    v.lp,
-			value: v.value,
-			File:  v.File,
-		}
+		visitor := &ReversoAssignVisitor{lp: v.lp, value: v.value, File: v.File}
 		ast.Walk(visitor, fs)
 	}
 	return v
-
 }

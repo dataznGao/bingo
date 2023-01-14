@@ -8,7 +8,6 @@ import (
 )
 
 func StrVal(value interface{}) string {
-	// interface 转 string
 	var key string
 	if value == nil {
 		return key
@@ -58,10 +57,8 @@ func StrVal(value interface{}) string {
 		newValue, _ := json.Marshal(value)
 		key = string(newValue)
 	}
-
 	return key
 }
-
 func DeepCopy(dst, src interface{}) error {
 	var buf bytes.Buffer
 	if err := gob.NewEncoder(&buf).Encode(src); err != nil {

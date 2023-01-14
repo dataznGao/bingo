@@ -23,7 +23,6 @@ func LoadAllFile(path string) ([]string, []string, error) {
 	}
 	return res, notGoFile, nil
 }
-
 func getAllFile(parent string, dir []fs.FileInfo, res, notGoFile *[]string) error {
 	for _, file := range dir {
 		absolutePath := path.Join(parent, file.Name())
@@ -37,7 +36,7 @@ func getAllFile(parent string, dir []fs.FileInfo, res, notGoFile *[]string) erro
 				return err
 			}
 		} else {
-			if strings.HasSuffix(file.Name(), ".go") {
+			if strings.HasSuffix(file.Name(), ".go") && !strings.HasSuffix(file.Name(), "test.go") {
 				*res = append(*res, absolutePath)
 			} else {
 				*notGoFile = append(*notGoFile, absolutePath)
@@ -46,7 +45,6 @@ func getAllFile(parent string, dir []fs.FileInfo, res, notGoFile *[]string) erro
 	}
 	return nil
 }
-
 func ConvertConfigMap(i interface{}) interface{} {
 	switch x := i.(type) {
 	case map[interface{}]interface{}:
@@ -62,7 +60,6 @@ func ConvertConfigMap(i interface{}) interface{} {
 	}
 	return i
 }
-
 func GetFilePackage(file *ast.File) string {
 	return file.Name.Name
 }
@@ -79,7 +76,6 @@ func isExist(path string) bool {
 	}
 	return true
 }
-
 func CreateFile(path string, code []byte) error {
 	length := len(path)
 	pos := length
@@ -108,14 +104,12 @@ func CreateFile(path string, code []byte) error {
 	writer.Flush()
 	return err
 }
-
 func Clean(gc []string) error {
 	for _, path := range gc {
 		os.Remove(path)
 	}
 	return nil
 }
-
 func InsertFileHead(fileName string, info []byte) error {
 	file, err := ioutil.ReadFile(fileName)
 	if err != nil {

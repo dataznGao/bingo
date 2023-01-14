@@ -24,20 +24,12 @@ func (v *ValueObjectVisitor) Visit(node ast.Node) ast.Visitor {
 					for _, object := range objs {
 						if locatePackage.MethodP.Name == "" || locatePackage.MethodP.Name == "*" {
 							if decl, ok := object.(*ast.GenDecl); ok {
-								genVisitor := &ValueGenVisitor{
-									lp:    locatePackage,
-									value: v.Config.TargetValue,
-									File:  v.File,
-								}
+								genVisitor := &ValueGenVisitor{lp: locatePackage, value: v.Config.TargetValue, File: v.File}
 								ast.Walk(genVisitor, decl)
 							}
 						}
 						if decl, ok := object.(*ast.FuncDecl); ok {
-							funcVisitor := &ValueFuncVisitor{
-								lp:    locatePackage,
-								value: v.Config.TargetValue,
-								File:  v.File,
-							}
+							funcVisitor := &ValueFuncVisitor{lp: locatePackage, value: v.Config.TargetValue, File: v.File}
 							ast.Walk(funcVisitor, decl)
 						}
 					}

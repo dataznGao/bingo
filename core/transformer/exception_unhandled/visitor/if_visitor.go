@@ -20,11 +20,7 @@ func (v *ExceptionUnhandledIfVisitor) Visit(node ast.Node) ast.Visitor {
 	switch node.(type) {
 	case *ast.IfStmt:
 		stmt := node.(*ast.IfStmt)
-		condVisitor := &ExceptionUnhandledCondVisitor{
-			lp:   v.lp,
-			can:  false,
-			File: v.File,
-		}
+		condVisitor := &ExceptionUnhandledCondVisitor{lp: v.lp, can: false, File: v.File}
 		ast.Walk(condVisitor, stmt)
 		if condVisitor.can {
 			lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(stmt))

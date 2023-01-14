@@ -22,28 +22,24 @@ func GetIfCode(node *ast.IfStmt) (string, error) {
 	}
 	return buffer.String(), nil
 }
-
 func GetFuncCode(node *ast.FuncDecl) string {
 	var output []byte
 	buffer := bytes.NewBuffer(output)
 	format.Node(buffer, token.NewFileSet(), node)
 	return buffer.String()
 }
-
 func GetAssignCode(node *ast.AssignStmt) string {
 	var output []byte
 	buffer := bytes.NewBuffer(output)
 	format.Node(buffer, token.NewFileSet(), node)
 	return buffer.String()
 }
-
 func GetNodeCode(node ast.Node) string {
 	var output []byte
 	buffer := bytes.NewBuffer(output)
 	format.Node(buffer, token.NewFileSet(), node)
 	return buffer.String()
 }
-
 func GetBuildInfo(fileName string) []byte {
 	file, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -69,30 +65,25 @@ func GetBuildInfo(fileName string) []byte {
 	}
 	return []byte(resStr)
 }
-
 func GetFileCode(node *ast.File) []byte {
 	var output []byte
 	buffer := bytes.NewBuffer(output)
 	format.Node(buffer, token.NewFileSet(), node)
 	return buffer.Bytes()
 }
-
 func Copy(src, dst string) (int64, error) {
 	sourceFileStat, err := os.Stat(src)
 	if err != nil {
 		return 0, err
 	}
-
 	if !sourceFileStat.Mode().IsRegular() {
 		return 0, fmt.Errorf("%s is not a regular file", src)
 	}
-
 	source, err := os.Open(src)
 	if err != nil {
 		return 0, err
 	}
 	defer source.Close()
-
 	destination, err := os.Create(dst)
 	if err != nil {
 		return 0, err
@@ -101,7 +92,6 @@ func Copy(src, dst string) (int64, error) {
 	nBytes, err := io.Copy(destination, source)
 	return nBytes, err
 }
-
 func CopyStmtList(stmt []ast.Stmt) []ast.Stmt {
 	replica := make([]ast.Stmt, len(stmt))
 	copy(replica, stmt)

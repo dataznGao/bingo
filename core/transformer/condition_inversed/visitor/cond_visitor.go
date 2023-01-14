@@ -50,7 +50,6 @@ func (v *ConditionInversedCondVisitor) Visit(node ast.Node) ast.Visitor {
 				log.Printf("[bingo] INFO 变异位置: %v\n变异为: \n%v\n", newPath, util.GetNodeCode(node))
 			}
 		}
-
 	}
 	return v
 }

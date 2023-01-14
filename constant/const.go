@@ -15,7 +15,6 @@ const (
 	ConditionInversedFault
 	SyncFault
 )
-
 const (
 	StrValueFault                 = "ValueFault"
 	StrNullFault                  = "NullFault"
@@ -29,14 +28,15 @@ const (
 	StrConditionInversedFault     = "ConditionInversedFault"
 	StrSyncFault                  = "SyncFault"
 )
-
 const (
 	ConfigFile = "/Users/misery/GolandProjects/bingo/config.yaml"
 )
-
 const (
 	Always = "ALWAYS"
 	Random = "RANDOM"
+)
+const (
+	Separator = "/"
 )
 
 var FaultTypeMap map[string]FaultType

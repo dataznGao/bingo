@@ -53,6 +53,5 @@ func (v *SwitchMissDefaultCaseVisitor) Visit(node ast.Node) ast.Visitor {
 			}
 		}
 	}
-
 	return nil
 }

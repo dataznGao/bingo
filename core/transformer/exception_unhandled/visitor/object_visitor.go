@@ -23,10 +23,7 @@ func (v *ExceptionUnhandledObjectVisitor) Visit(node ast.Node) ast.Visitor {
 					objs := f.Decls
 					for _, object := range objs {
 						if decl, ok := object.(*ast.FuncDecl); ok {
-							funcVisitor := &ExceptionUnhandledFuncVisitor{
-								lp:   locatePackage,
-								File: v.File,
-							}
+							funcVisitor := &ExceptionUnhandledFuncVisitor{lp: locatePackage, File: v.File}
 							ast.Walk(funcVisitor, decl)
 						}
 					}

@@ -18,22 +18,13 @@ func (v *ValueForVisitor) Visit(node ast.Node) ast.Visitor {
 			switch stmt.(type) {
 			case *ast.AssignStmt:
 				stmt := stmt.(*ast.AssignStmt)
-				visitor := &ValueAssignVisitor{
-					lp:    v.lp,
-					value: v.value,
-					File:  v.File,
-				}
+				visitor := &ValueAssignVisitor{lp: v.lp, value: v.value, File: v.File}
 				ast.Walk(visitor, stmt)
 			}
 		}
 	} else if fs, ok := node.(*ast.AssignStmt); ok {
-		visitor := &ValueAssignVisitor{
-			lp:    v.lp,
-			value: v.value,
-			File:  v.File,
-		}
+		visitor := &ValueAssignVisitor{lp: v.lp, value: v.value, File: v.File}
 		ast.Walk(visitor, fs)
 	}
 	return v
-
 }

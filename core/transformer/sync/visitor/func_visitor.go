@@ -25,21 +25,12 @@ func (v *SyncFuncVisitor) Visit(node ast.Node) ast.Visitor {
 		}
 		can := transformer.FunCanInjure(v.lp, structs, decl.Name.Name)
 		if can {
-			// 对函数段中不同的stmt进行单独处理
 			for i, stmt := range decl.Body.List {
 				if ifStmt, ok := stmt.(*ast.IfStmt); ok {
-					visitor := &SyncIfVisitor{
-						lp:   v.lp,
-						can:  false,
-						File: v.File,
-					}
+					visitor := &SyncIfVisitor{lp: v.lp, can: false, File: v.File}
 					ast.Walk(visitor, ifStmt)
 				} else if goStmt, ok := stmt.(*ast.GoStmt); ok {
-					visitor := &SyncGoVisitor{
-						lp:   v.lp,
-						call: nil,
-						File: v.File,
-					}
+					visitor := &SyncGoVisitor{lp: v.lp, call: nil, File: v.File}
 					ast.Walk(visitor, goStmt)
 					lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(stmt))
 					var expr = new(ast.ExprStmt)
@@ -54,16 +45,10 @@ func (v *SyncFuncVisitor) Visit(node ast.Node) ast.Visitor {
 						log.Printf("[bingo] INFO 变异位置: %v\n变异为: \n%v\n", newPath, util.GetNodeCode(expr))
 					}
 				} else if forStmt, ok := stmt.(*ast.ForStmt); ok {
-					visitor := &SyncForVisitor{
-						lp:   v.lp,
-						File: v.File,
-					}
+					visitor := &SyncForVisitor{lp: v.lp, File: v.File}
 					ast.Walk(visitor, forStmt)
 				} else if caseStmt, ok := stmt.(*ast.SwitchStmt); ok {
-					visitor := &SyncCaseVisitor{
-						lp:   v.lp,
-						File: v.File,
-					}
+					visitor := &SyncCaseVisitor{lp: v.lp, File: v.File}
 					ast.Walk(visitor, caseStmt)
 				}
 			}

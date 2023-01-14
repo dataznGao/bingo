@@ -5,7 +5,6 @@ type Configuration struct {
 	OutputPath  string         `yaml:"outputPath"`
 	FaultPoints []*FaultConfig `yaml:"faultPoints"`
 }
-
 type LocationPatternP struct {
 	PackageP  *FaultPatternP `yaml:"packageP"`
 	StructP   *FaultPatternP `yaml:"structP"`
@@ -17,7 +16,6 @@ type FaultConfig struct {
 	LocationPatterns []*LocationPatternP `yaml:"locationPattern"`
 	TargetValue      interface{}         `yaml:"targetValue"`
 }
-
 type FaultPatternP struct {
 	Name           string `yaml:"name"`
 	ActivationRate string `yaml:"activationRate"`

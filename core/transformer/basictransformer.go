@@ -8,9 +8,7 @@ import (
 	"strings"
 )
 
-type Transformer interface {
-	ToInjure()
-}
+type Transformer interface{ ToInjure() }
 
 func FunCanInjure(lp *config.LocationPatternP, structs []*ast.Field, funcName string) bool {
 	if len(structs) == 0 {
@@ -33,15 +31,11 @@ func FunCanInjure(lp *config.LocationPatternP, structs []*ast.Field, funcName st
 	}
 	return false
 }
-
 func oneCanInjure(lp *config.LocationPatternP, structName, funcName string) bool {
 	planStruct := strings.TrimSpace(lp.StructP.Name)
 	planFunc := strings.TrimSpace(lp.MethodP.Name)
-	return (planStruct == "*" || planStruct == "" || planStruct == structName) &&
-		(planFunc == "*" || planFunc == "" || planFunc == funcName) &&
-		util.CanPerform(lp.StructP.ActivationRate) && util.CanPerform(lp.MethodP.ActivationRate)
+	return (planStruct == "*" || planStruct == "" || planStruct == structName) && (planFunc == "*" || planFunc == "" || planFunc == funcName) && util.CanPerform(lp.StructP.ActivationRate) && util.CanPerform(lp.MethodP.ActivationRate)
 }
-
 func VariablesCanInjure(lp *config.LocationPatternP, variables []string) bool {
 	has := util.Contains(lp.VariableP.Name, variables)
 	if has {
@@ -50,7 +44,6 @@ func VariablesCanInjure(lp *config.LocationPatternP, variables []string) bool {
 		return false
 	}
 }
-
 func VariableCanInjure(lp *config.LocationPatternP, variable string) bool {
 	has := lp.VariableP.Name == variable
 	if has {
@@ -59,7 +52,6 @@ func VariableCanInjure(lp *config.LocationPatternP, variable string) bool {
 		return false
 	}
 }
-
 func GetVariable(node *ast.BinaryExpr) []string {
 	res := make([]string, 0)
 	q := &util.Queue[*ast.BinaryExpr]{}
@@ -83,13 +75,11 @@ func GetVariable(node *ast.BinaryExpr) []string {
 	}
 	return res
 }
-
 func HasRunError(file *ds.File) (string, bool) {
 	if file.IsInjured && file.InputPath != file.OutputPath {
 		file.OriInputPath = file.InputPath
 		file.InputPath = file.OutputPath
 	}
-
 	err := CreateFile(file)
 	if err != nil {
 		panic(err)
@@ -108,7 +98,6 @@ func HasRunError(file *ds.File) (string, bool) {
 	file.IsInjured = true
 	return newPath, false
 }
-
 func CreateFile(file *ds.File) error {
 	code := util.GetFileCode(file.File)
 	newPath := ""

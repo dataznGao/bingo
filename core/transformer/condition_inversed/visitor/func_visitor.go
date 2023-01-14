@@ -22,19 +22,12 @@ func (v *ConditionInversedFuncVisitor) Visit(node ast.Node) ast.Visitor {
 		}
 		can := transformer.FunCanInjure(v.lp, structs, decl.Name.Name)
 		if can {
-			// 对函数段中不同的stmt进行单独处理
 			for _, stmt := range decl.Body.List {
 				if ifStmt, ok := stmt.(*ast.IfStmt); ok {
-					visitor := &ConditionInversedIfVisitor{
-						lp:   v.lp,
-						File: v.File,
-					}
+					visitor := &ConditionInversedIfVisitor{lp: v.lp, File: v.File}
 					ast.Walk(visitor, ifStmt)
 				} else if caseStmt, ok := stmt.(*ast.SwitchStmt); ok {
-					visitor := &ConditionInversedIfVisitor{
-						lp:   v.lp,
-						File: v.File,
-					}
+					visitor := &ConditionInversedIfVisitor{lp: v.lp, File: v.File}
 					ast.Walk(visitor, caseStmt)
 				}
 			}

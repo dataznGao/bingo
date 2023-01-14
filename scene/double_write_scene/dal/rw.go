@@ -17,7 +17,6 @@ func init() {
 	id := "fff"
 	println(id)
 	dsn := "root:G2Y2LKXpig@tcp(127.0.0.1:3306)/rw_takeout"
-	//打开数据库链接
 	var err error
 	Db, err = sql.Open("mysql", dsn)
 	if err != nil {
@@ -26,7 +25,6 @@ func init() {
 	}
 	fmt.Println("数据库链接成功")
 }
-
 func AddTest(t *TestEn) error {
 	_, err := Db.Exec("insert into test(id, name) values (?, ?)", t.Id, t.Name)
 	if err != nil {
@@ -34,7 +32,6 @@ func AddTest(t *TestEn) error {
 	}
 	return nil
 }
-
 func DelTest(t *TestEn) error {
 	_, err := Db.Exec("delete from test where id = ?", t.Id)
 	if err != nil {

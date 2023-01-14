@@ -3,77 +3,60 @@ package bingo
 import (
 	"github.com/dataznGao/bingo/constant"
 	"github.com/dataznGao/bingo/core/config"
+	"github.com/dataznGao/bingo/util"
 	"log"
 	"strings"
 )
 
-func CreateFaultEnv(inputPath, outputPath string) *FaultEnv {
-	return &FaultEnv{
-		InputPath:  inputPath,
-		OutputPath: outputPath,
+func CreateMutationEnv(inputPath, outputPath, testPath string) *MutationEnv {
+	if strings.HasSuffix(outputPath, constant.Separator) {
+		outputPath = outputPath[:len(outputPath)-1]
 	}
+	outputTestPath := util.CompareAndExchange(testPath, outputPath, inputPath)
+	return &MutationEnv{InputPath: inputPath, OutputPath: outputPath, InputTestPath: testPath, OutputTestPath: outputTestPath}
 }
 
-type FaultEnv struct {
-	InputPath   string
-	OutputPath  string
-	FaultPoints []*config.FaultConfig
+type MutationEnv struct {
+	InputPath      string
+	OutputPath     string
+	InputTestPath  string
+	OutputTestPath string
+	FaultPoints    []*config.FaultConfig
 }
-
-// LocationPattern util(1/5).myStruct(1/3).myFunc(1/2).myVariable | main.*.*.*
 type LocationPattern string
 
-func (fe *FaultEnv) ValueFault(locationPattern LocationPattern, targetValue interface{}) *FaultEnv {
+func (fe *MutationEnv) ValueFault(locationPattern LocationPattern, targetValue interface{}) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ValueFault] set fault point failed, err: %v", err.Error())
 	}
-	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{
-		FaultType:        constant.StrValueFault,
-		LocationPatterns: lps,
-		TargetValue:      targetValue,
-	})
+	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{FaultType: constant.StrValueFault, LocationPatterns: lps, TargetValue: targetValue})
 	return fe
 }
-
-func (fe *FaultEnv) ConditionInversedFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) ConditionInversedFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ConditionInversedFault] set fault point failed, err: %v", err.Error())
 	}
-	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{
-		FaultType:        constant.StrConditionInversedFault,
-		LocationPatterns: lps,
-		TargetValue:      nil,
-	})
+	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{FaultType: constant.StrConditionInversedFault, LocationPatterns: lps, TargetValue: nil})
 	return fe
 }
-
-func (fe *FaultEnv) SwitchMissDefaultFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) SwitchMissDefaultFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ConditionInversedFault] set fault point failed, err: %v", err.Error())
 	}
-	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{
-		FaultType:        constant.StrSwitchMissDefaultFault,
-		LocationPatterns: lps,
-	})
+	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{FaultType: constant.StrSwitchMissDefaultFault, LocationPatterns: lps})
 	return fe
 }
-
-func (fe *FaultEnv) NullFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) NullFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ConditionInversedFault] set fault point failed, err: %v", err.Error())
 	}
-	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{
-		FaultType:        constant.StrNullFault,
-		LocationPatterns: lps,
-		TargetValue:      "nil",
-	})
+	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{FaultType: constant.StrNullFault, LocationPatterns: lps, TargetValue: "nil"})
 	return fe
 }
-
 func (l LocationPattern) parse() ([]*config.LocationPatternP, error) {
 	var (
 		parts = make([]string, 0)
@@ -81,16 +64,10 @@ func (l LocationPattern) parse() ([]*config.LocationPatternP, error) {
 	)
 	makeFaultPattern := func(sp string, p []*config.FaultPatternP) []*config.FaultPatternP {
 		if !strings.Contains(sp, "(") {
-			p = append(p, &config.FaultPatternP{
-				Name:           strings.TrimSpace(sp),
-				ActivationRate: "1",
-			})
+			p = append(p, &config.FaultPatternP{Name: strings.TrimSpace(sp), ActivationRate: "1"})
 		} else {
 			faultPatterns := strings.Split(strings.TrimSpace(sp), "(")
-			p = append(p, &config.FaultPatternP{
-				Name:           faultPatterns[0],
-				ActivationRate: strings.TrimRight(faultPatterns[1], ")"),
-			})
+			p = append(p, &config.FaultPatternP{Name: faultPatterns[0], ActivationRate: strings.TrimRight(faultPatterns[1], ")")})
 		}
 		return p
 	}
@@ -104,12 +81,7 @@ func (l LocationPattern) parse() ([]*config.LocationPatternP, error) {
 		if len(split) != 4 {
 			return nil, constant.NewLocationPatternFormatError(string(l))
 		}
-		lp := &config.LocationPatternP{
-			PackageP:  nil,
-			StructP:   nil,
-			MethodP:   nil,
-			VariableP: nil,
-		}
+		lp := &config.LocationPatternP{PackageP: nil, StructP: nil, MethodP: nil, VariableP: nil}
 		p := make([]*config.FaultPatternP, 0)
 		for _, sp := range split {
 			p = makeFaultPattern(sp, p)
@@ -125,68 +97,43 @@ func (l LocationPattern) parse() ([]*config.LocationPatternP, error) {
 	}
 	return res, nil
 }
-
-func (fe *FaultEnv) ExceptionUncaughtFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) ExceptionUncaughtFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ExceptionUncaughtFault] set fault point failed, err: %v", err.Error())
 	}
-	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{
-		FaultType:        constant.StrExceptionUncaughtFault,
-		LocationPatterns: lps,
-		TargetValue:      nil,
-	})
+	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{FaultType: constant.StrExceptionUncaughtFault, LocationPatterns: lps, TargetValue: nil})
 	return fe
 }
-
-func (fe *FaultEnv) ExceptionUnhandledFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) ExceptionUnhandledFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ExceptionUncaughtFault] set fault point failed, err: %v", err.Error())
 	}
-	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{
-		FaultType:        constant.StrExceptionUnhandledFault,
-		LocationPatterns: lps,
-		TargetValue:      nil,
-	})
+	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{FaultType: constant.StrExceptionUnhandledFault, LocationPatterns: lps, TargetValue: nil})
 	return fe
 }
-
-func (fe *FaultEnv) ExceptionShortcircuitFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) ExceptionShortcircuitFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ExceptionUncaughtFault] set fault point failed, err: %v", err.Error())
 	}
-	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{
-		FaultType:        constant.StrExceptionUnhandledFault,
-		LocationPatterns: lps,
-		TargetValue:      nil,
-	})
+	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{FaultType: constant.StrExceptionUnhandledFault, LocationPatterns: lps, TargetValue: nil})
 	return fe
 }
-
-func (fe *FaultEnv) SyncFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) SyncFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ExceptionUncaughtFault] set fault point failed, err: %v", err.Error())
 	}
-	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{
-		FaultType:        constant.StrSyncFault,
-		LocationPatterns: lps,
-		TargetValue:      nil,
-	})
+	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{FaultType: constant.StrSyncFault, LocationPatterns: lps, TargetValue: nil})
 	return fe
 }
-
-func (fe *FaultEnv) AttributeReversoFault(locationPattern LocationPattern, targetValue interface{}) *FaultEnv {
+func (fe *MutationEnv) AttributeReversoFault(locationPattern LocationPattern, targetValue interface{}) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ValueFault] set fault point failed, err: %v", err.Error())
 	}
-	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{
-		FaultType:        constant.StrAttributeReversoFault,
-		LocationPatterns: lps,
-		TargetValue:      targetValue,
-	})
+	fe.FaultPoints = append(fe.FaultPoints, &config.FaultConfig{FaultType: constant.StrAttributeReversoFault, LocationPatterns: lps, TargetValue: targetValue})
 	return fe
 }

@@ -15,12 +15,8 @@ func (v *SyncCaseVisitor) Visit(node ast.Node) ast.Visitor {
 	switch node.(type) {
 	case *ast.IfStmt:
 		stmt := node.(*ast.IfStmt)
-		visitor := &SyncIfVisitor{
-			lp:   v.lp,
-			File: v.File,
-		}
+		visitor := &SyncIfVisitor{lp: v.lp, File: v.File}
 		ast.Walk(visitor, stmt)
 	}
-
 	return v
 }
