@@ -3,27 +3,36 @@ package bingo
 import (
 	"github.com/dataznGao/bingo/constant"
 	"github.com/dataznGao/bingo/core/config"
+	"github.com/dataznGao/bingo/util"
 	"log"
 	"strings"
 )
 
-func CreateFaultEnv(inputPath, outputPath string) *FaultEnv {
-	return &FaultEnv{
-		InputPath:  inputPath,
-		OutputPath: outputPath,
+func CreateMutationEnv(inputPath, outputPath, testPath string) *MutationEnv {
+	if strings.HasSuffix(outputPath, constant.Separator) {
+		outputPath = outputPath[:len(outputPath)-1]
+	}
+	outputTestPath := util.CompareAndExchange(testPath, outputPath, inputPath)
+	return &MutationEnv{
+		InputPath:      inputPath,
+		OutputPath:     outputPath,
+		InputTestPath:  testPath,
+		OutputTestPath: outputTestPath,
 	}
 }
 
-type FaultEnv struct {
-	InputPath   string
-	OutputPath  string
-	FaultPoints []*config.FaultConfig
+type MutationEnv struct {
+	InputPath      string
+	OutputPath     string
+	InputTestPath  string
+	OutputTestPath string
+	FaultPoints    []*config.FaultConfig
 }
 
 // LocationPattern util(1/5).myStruct(1/3).myFunc(1/2).myVariable | main.*.*.*
 type LocationPattern string
 
-func (fe *FaultEnv) ValueFault(locationPattern LocationPattern, targetValue interface{}) *FaultEnv {
+func (fe *MutationEnv) ValueFault(locationPattern LocationPattern, targetValue interface{}) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ValueFault] set fault point failed, err: %v", err.Error())
@@ -36,7 +45,7 @@ func (fe *FaultEnv) ValueFault(locationPattern LocationPattern, targetValue inte
 	return fe
 }
 
-func (fe *FaultEnv) ConditionInversedFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) ConditionInversedFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ConditionInversedFault] set fault point failed, err: %v", err.Error())
@@ -49,7 +58,7 @@ func (fe *FaultEnv) ConditionInversedFault(locationPattern LocationPattern) *Fau
 	return fe
 }
 
-func (fe *FaultEnv) SwitchMissDefaultFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) SwitchMissDefaultFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ConditionInversedFault] set fault point failed, err: %v", err.Error())
@@ -61,7 +70,7 @@ func (fe *FaultEnv) SwitchMissDefaultFault(locationPattern LocationPattern) *Fau
 	return fe
 }
 
-func (fe *FaultEnv) NullFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) NullFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ConditionInversedFault] set fault point failed, err: %v", err.Error())
@@ -126,7 +135,7 @@ func (l LocationPattern) parse() ([]*config.LocationPatternP, error) {
 	return res, nil
 }
 
-func (fe *FaultEnv) ExceptionUncaughtFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) ExceptionUncaughtFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ExceptionUncaughtFault] set fault point failed, err: %v", err.Error())
@@ -139,7 +148,7 @@ func (fe *FaultEnv) ExceptionUncaughtFault(locationPattern LocationPattern) *Fau
 	return fe
 }
 
-func (fe *FaultEnv) ExceptionUnhandledFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) ExceptionUnhandledFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ExceptionUncaughtFault] set fault point failed, err: %v", err.Error())
@@ -152,7 +161,7 @@ func (fe *FaultEnv) ExceptionUnhandledFault(locationPattern LocationPattern) *Fa
 	return fe
 }
 
-func (fe *FaultEnv) ExceptionShortcircuitFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) ExceptionShortcircuitFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ExceptionUncaughtFault] set fault point failed, err: %v", err.Error())
@@ -165,7 +174,7 @@ func (fe *FaultEnv) ExceptionShortcircuitFault(locationPattern LocationPattern) 
 	return fe
 }
 
-func (fe *FaultEnv) SyncFault(locationPattern LocationPattern) *FaultEnv {
+func (fe *MutationEnv) SyncFault(locationPattern LocationPattern) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ExceptionUncaughtFault] set fault point failed, err: %v", err.Error())
@@ -178,7 +187,7 @@ func (fe *FaultEnv) SyncFault(locationPattern LocationPattern) *FaultEnv {
 	return fe
 }
 
-func (fe *FaultEnv) AttributeReversoFault(locationPattern LocationPattern, targetValue interface{}) *FaultEnv {
+func (fe *MutationEnv) AttributeReversoFault(locationPattern LocationPattern, targetValue interface{}) *MutationEnv {
 	lps, err := locationPattern.parse()
 	if err != nil {
 		log.Fatalf("[ValueFault] set fault point failed, err: %v", err.Error())

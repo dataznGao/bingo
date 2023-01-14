@@ -37,7 +37,9 @@ func getAllFile(parent string, dir []fs.FileInfo, res, notGoFile *[]string) erro
 				return err
 			}
 		} else {
-			if strings.HasSuffix(file.Name(), ".go") {
+			// 过滤掉测试文件，测试文件不进行变异
+			if strings.HasSuffix(file.Name(), ".go") &&
+				!strings.HasSuffix(file.Name(), "test.go") {
 				*res = append(*res, absolutePath)
 			} else {
 				*notGoFile = append(*notGoFile, absolutePath)

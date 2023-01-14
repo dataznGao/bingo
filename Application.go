@@ -1,7 +1,7 @@
 package bingo
 
 func main() {
-	env := CreateFaultEnv("/Users/misery/GolandProjects/bingo/scene", "/Users/misery/GolandProjects/bingo/scene1")
+	env := CreateMutationEnv("/Users/misery/GolandProjects/bingo/scene", "/Users/misery/GolandProjects/bingo/scene1", "")
 	// env.ConditionInversedFault("util(1/5).myStruct(1/3).myFunc(1/2).myVariable | mmap(3/4).*.*.a(3/4)")
 	//env.NullFault("scene.*.*.a")
 	//env.ValueFault("scene.*.*.a", "\"str\"")
@@ -12,7 +12,7 @@ func main() {
 	//env.AttributeReversoFault("scene.*.*.c", 10)
 
 	env.SyncFault("rpc_scene.*.*.*")
-	f := FaultPerformerFactory{}
+	f := MutationPerformer{}
 	err := f.SetEnv(env).Run()
 	if err != nil {
 		return

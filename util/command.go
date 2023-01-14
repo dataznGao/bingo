@@ -8,8 +8,9 @@ import (
 	"runtime"
 )
 
-func Command(arg ...string) (result string, err error) {
+func Command(arg ...string) (string, error) {
 	name := "/bin/bash"
+	result := ""
 	c := "-c"
 	// 根据系统设定不同的命令name
 	if runtime.GOOS == "windows" {
@@ -26,7 +27,7 @@ func Command(arg ...string) (result string, err error) {
 	}
 
 	//执行命令
-	if err := cmd.Start(); err != nil {
+	if err = cmd.Start(); err != nil {
 		return result, err
 	}
 
@@ -36,10 +37,10 @@ func Command(arg ...string) (result string, err error) {
 		return result, err
 	}
 
-	if err := cmd.Wait(); err != nil {
+	if err = cmd.Wait(); err != nil && err.(*exec.ExitError).Stderr != nil {
 		return result, err
 	}
 
 	result = string(bytes)
-	return
+	return result, nil
 }

@@ -39,6 +39,10 @@ const (
 	Random = "RANDOM"
 )
 
+const (
+	Separator = "/"
+)
+
 var FaultTypeMap map[string]FaultType
 
 func InitFaultTypeMap() {

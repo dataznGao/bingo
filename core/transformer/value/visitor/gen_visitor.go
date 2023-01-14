@@ -26,7 +26,7 @@ func (v *ValueGenVisitor) Visit(node ast.Node) ast.Visitor {
 					if name.Name == v.lp.VariableP.Name {
 						can := util.CanPerform(v.lp.VariableP.ActivationRate)
 						if can {
-							lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(sp))
+							lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(gen))
 							if sp.Values == nil {
 								sp.Values = []ast.Expr{ast.NewIdent(util.StrVal(v.value))}
 								if newPath, has := transformer.HasRunError(v.File); has {
@@ -34,7 +34,7 @@ func (v *ValueGenVisitor) Visit(node ast.Node) ast.Visitor {
 									transformer.CreateFile(v.File)
 								} else {
 									log.Printf(lo)
-									log.Printf("[bingo] INFO 变异位置: %v\n变异为: \n%v\n", newPath, util.GetNodeCode(sp))
+									log.Printf("[bingo] INFO 变异位置: %v\n变异为: \n%v\n", newPath, util.GetNodeCode(gen))
 								}
 							} else if ident, ok := sp.Values[i].(*ast.Ident); ok {
 								nam := ident.Name
@@ -44,7 +44,7 @@ func (v *ValueGenVisitor) Visit(node ast.Node) ast.Visitor {
 									transformer.CreateFile(v.File)
 								} else {
 									log.Printf(lo)
-									log.Printf("[bingo] INFO 变异位置: %v\n变异为: \n%v\n", newPath, util.GetNodeCode(sp))
+									log.Printf("[bingo] INFO 变异位置: %v\n变异为: \n%v\n", newPath, util.GetNodeCode(gen))
 								}
 							}
 						}

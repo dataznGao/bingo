@@ -45,6 +45,6 @@ env.ConditionInversedFault("${locatePattern}")
 3. 创建factory并运行
 
 ```go
-f := code_drill.FaultPerformerFactory{}
+f := code_mutation.FaultPerformerFactory{}
 err := f.SetEnv(env).Run()
 ```
