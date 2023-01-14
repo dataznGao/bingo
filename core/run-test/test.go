@@ -32,7 +32,7 @@ func Test(testPath string, inputPath string) (string, error) {
 	if setRawFile {
 		commend += " " + relativeRawFile
 	}
-	result, err := util.Command(commend)
+	result, err := util.CommandTest(commend)
 	if err != nil {
 		log.Fatalf("[bingo] ERROR test fail, please check your testPath !!, err: %v", err)
 	}
