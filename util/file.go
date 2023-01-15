@@ -24,6 +24,41 @@ func LoadAllFile(path string) ([]string, []string, error) {
 	return res, notGoFile, nil
 }
 
+func LoadAllTestFile(path string) ([]string, error) {
+	dir, err := ioutil.ReadDir(path)
+	if err != nil {
+		return nil, err
+	}
+	res := make([]string, 0)
+	err = getAllTestFile(path, dir, &res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func getAllTestFile(parent string, dir []fs.FileInfo, res *[]string) error {
+	for _, file := range dir {
+		absolutePath := path.Join(parent, file.Name())
+		if file.IsDir() {
+			readDir, err := ioutil.ReadDir(absolutePath)
+			if err != nil {
+				return err
+			}
+			err = getAllTestFile(absolutePath, readDir, res)
+			if err != nil {
+				return err
+			}
+		} else {
+			// 过滤掉测试文件，测试文件不进行变异
+			if strings.HasSuffix(file.Name(), "test.go") {
+				*res = append(*res, absolutePath)
+			}
+		}
+	}
+	return nil
+}
+
 func getAllFile(parent string, dir []fs.FileInfo, res, notGoFile *[]string) error {
 	for _, file := range dir {
 		absolutePath := path.Join(parent, file.Name())
