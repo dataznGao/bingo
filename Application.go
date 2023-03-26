@@ -13,7 +13,7 @@ func main() {
 
 	env.SyncFault("rpc_scene.*.*.*")
 	f := MutationPerformer{}
-	err := f.SetEnv(env).Run()
+	err := f.SetEnv(env).Test()
 	if err != nil {
 		return
 	}

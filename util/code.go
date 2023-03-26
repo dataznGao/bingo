@@ -11,6 +11,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strings"
 )
 
 func GetIfCode(node *ast.IfStmt) (string, error) {
@@ -106,4 +107,14 @@ func CopyStmtList(stmt []ast.Stmt) []ast.Stmt {
 	replica := make([]ast.Stmt, len(stmt))
 	copy(replica, stmt)
 	return replica
+}
+
+func CleanCode(str string) string {
+	// 清理乱码
+	str = strings.ReplaceAll(str, "\u001B", "")
+	re1 := regexp.MustCompile("\\[\\d+m")
+	re2 := regexp.MustCompile("\\[38;5;\\d+m")
+	res := re1.ReplaceAllString(str, "")
+	res = re2.ReplaceAllString(res, "")
+	return res
 }
