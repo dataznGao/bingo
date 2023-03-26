@@ -86,6 +86,10 @@ func entry(conf *config.Configuration) error {
 	if err != nil {
 		return err
 	}
+	err = core.FillPackage(files, notGoFiles)
+	if err != nil {
+		return err
+	}
 	log.Printf("[bingo] INFO ======= 开始变异 ========")
 	for filename, file := range files {
 		for _, faultConfig := range conf.FaultPoints {
@@ -96,9 +100,6 @@ func entry(conf *config.Configuration) error {
 			}
 		}
 	}
-	err = core.FillPackage(files, notGoFiles)
-	if err != nil {
-		return err
-	}
+
 	return nil
 }
