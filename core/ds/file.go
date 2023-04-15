@@ -1,6 +1,8 @@
 package ds
 
-import "go/ast"
+import (
+	"go/ast"
+)
 
 type FileInjure struct {
 	File      *ast.File
@@ -14,4 +16,13 @@ type File struct {
 	OutputPath   string
 	IsInjured    bool
 	OriInputPath string
+	Info         *PrintInfo
+}
+
+type PrintInfo struct {
+	FileName     string
+	PackageName  string
+	StructName   string
+	FuncName     string
+	VariableName string
 }

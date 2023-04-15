@@ -17,7 +17,7 @@ type SyncGoVisitor struct {
 func (v *SyncGoVisitor) Visit(node ast.Node) ast.Visitor {
 	switch node.(type) {
 	case *ast.GoStmt:
-		if transformer.VariablesCanInjure(v.lp, []string{"*"}) {
+		if transformer.VariablesCanInjure(v.File, v.lp, []string{"*"}) {
 			stmt := node.(*ast.GoStmt)
 			var token token.Pos
 			stmt.Go = token

@@ -11,14 +11,14 @@ func TestFaultPerformerFactory_Run(t *testing.T) {
 	//env.ConditionInversedFault("*.*.*.*")
 	//env.ExceptionUncaughtFault("*.*.*.*")
 	//env.ExceptionUncaughtFault("*.*.*.*")
-	env.ExceptionUnhandledFault("*.*.*.*")
-	env.SwitchMissDefaultFault("scene.*.*.a")
-	env.ValueFault("*.*.*.id", "\"str\"")
-	env.AttributeReversoFault("*.*.*.c", 10)
+	//env.ExceptionUnhandledFault("*.*.*.*")
+	//env.SwitchMissDefaultFault("scene.*.*.a")
+	//env.ValueFault("*.*.*.id", "\"str\"")
+	//env.AttributeReversoFault("*.*.*.c", 10)
 
-	//env.SyncFault("*.*.*.*")
+	env.SyncFault("*.*.*.*")
 	f := MutationPerformer{}
-	err := f.SetEnv(env).Test()
+	err := f.SetEnv(env).Test(true)
 	f.SetEnv(env)
 	if err != nil {
 		return

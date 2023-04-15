@@ -22,7 +22,7 @@ func (v *ValueAssignVisitor) Visit(node ast.Node) ast.Visitor {
 			switch lh.(type) {
 			case *ast.SelectorExpr:
 				se := lh.(*ast.SelectorExpr)
-				if transformer.VariableCanInjure(v.lp, se.Sel.Name) {
+				if transformer.VariableCanInjure(v.File, v.lp, se.Sel.Name) {
 					if rh, ok := stmt.Rhs[i].(*ast.BasicLit); ok {
 						lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(stmt))
 						value := rh.Value
@@ -38,7 +38,7 @@ func (v *ValueAssignVisitor) Visit(node ast.Node) ast.Visitor {
 				}
 			case *ast.Ident:
 				se := lh.(*ast.Ident)
-				if transformer.VariableCanInjure(v.lp, se.Name) {
+				if transformer.VariableCanInjure(v.File, v.lp, se.Name) {
 					if rh, ok := stmt.Rhs[i].(*ast.BasicLit); ok {
 						lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(stmt))
 						value := rh.Value

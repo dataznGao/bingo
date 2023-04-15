@@ -5,6 +5,7 @@ import (
 	"github.com/dataznGao/bingo/core"
 	"github.com/dataznGao/bingo/core/config"
 	"github.com/dataznGao/bingo/core/run-test"
+	"github.com/dataznGao/bingo/core/transformer"
 	"github.com/dataznGao/bingo/task"
 	"github.com/dataznGao/bingo/util"
 	"log"
@@ -22,17 +23,19 @@ func (f *MutationPerformer) SetEnv(env *MutationEnv) *MutationPerformer {
 }
 
 // Run 仅仅对inputPath中的进行变异，不进行测试
-func (f *MutationPerformer) Run() error {
+func (f *MutationPerformer) Run(shouldPrint bool) error {
+	transformer.ShouldPrint = shouldPrint
 	err := bingoMutationEntry(f._env)
 	if err != nil {
 		return err
 	}
+	util.DataToExcel(f._env.OutputPath+"/bingo_out_info.xlsx", transformer.OutInfo)
 	return nil
 }
 
 // Test 对inputPath中的进行变异测试，返回两次测试的结果对比
-func (f *MutationPerformer) Test() error {
-	err := f.Run()
+func (f *MutationPerformer) Test(shouldPrint bool) error {
+	err := f.Run(shouldPrint)
 	if err != nil {
 		return err
 	}

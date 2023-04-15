@@ -23,7 +23,7 @@ func (v *SyncFuncVisitor) Visit(node ast.Node) ast.Visitor {
 		} else {
 			structs = decl.Recv.List
 		}
-		can := transformer.FunCanInjure(v.lp, structs, decl.Name.Name)
+		can := transformer.FunCanInjure(v.File, v.lp, structs, decl.Name.Name)
 		if can {
 			// 对函数段中不同的stmt进行单独处理
 			for i, stmt := range decl.Body.List {

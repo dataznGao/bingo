@@ -8,25 +8,34 @@ import (
 	"strings"
 )
 
+var ShouldPrint bool
+
+var OutInfo [][]string
+
+func init() {
+	OutInfo = make([][]string, 0)
+	OutInfo = append(OutInfo, []string{"file_name", "package_name", "struct_name", "function_name"})
+}
+
 type Transformer interface {
 	ToInjure()
 }
 
-func FunCanInjure(lp *config.LocationPatternP, structs []*ast.Field, funcName string) bool {
+func FunCanInjure(file *ds.File, lp *config.LocationPatternP, structs []*ast.Field, funcName string) bool {
 	if len(structs) == 0 {
-		if oneCanInjure(lp, "", funcName) {
+		if oneCanInjure(file, lp, "", funcName) {
 			return true
 		}
 	}
 	for _, struc := range structs {
 		if x, ok := struc.Type.(*ast.StarExpr); ok {
 			if ide, ok := x.X.(*ast.Ident); ok {
-				if oneCanInjure(lp, ide.Name, funcName) {
+				if oneCanInjure(file, lp, ide.Name, funcName) {
 					return true
 				}
 			}
 		} else if ide, ok := struc.Type.(*ast.Ident); ok {
-			if oneCanInjure(lp, ide.Name, funcName) {
+			if oneCanInjure(file, lp, ide.Name, funcName) {
 				return true
 			}
 		}
@@ -34,27 +43,69 @@ func FunCanInjure(lp *config.LocationPatternP, structs []*ast.Field, funcName st
 	return false
 }
 
-func oneCanInjure(lp *config.LocationPatternP, structName, funcName string) bool {
+func oneCanInjure(file *ds.File, lp *config.LocationPatternP, structName, funcName string) bool {
 	planStruct := strings.TrimSpace(lp.StructP.Name)
 	planFunc := strings.TrimSpace(lp.MethodP.Name)
-	return (planStruct == "*" || planStruct == "" || planStruct == structName) &&
+	can := (planStruct == "*" || planStruct == "" || planStruct == structName) &&
 		(planFunc == "*" || planFunc == "" || planFunc == funcName) &&
 		util.CanPerform(lp.StructP.ActivationRate) && util.CanPerform(lp.MethodP.ActivationRate)
+	if can && ShouldPrint {
+		if file.Info == nil {
+			file.Info = &ds.PrintInfo{
+				PackageName:  file.File.Name.Name,
+				StructName:   "",
+				FuncName:     "",
+				VariableName: "",
+				FileName:     file.FileName,
+			}
+		}
+		file.Info.StructName = structName
+		file.Info.FuncName = funcName
+		file.Info.FileName = file.FileName
+	}
+	return can
 }
 
-func VariablesCanInjure(lp *config.LocationPatternP, variables []string) bool {
+func VariablesCanInjure(file *ds.File, lp *config.LocationPatternP, variables []string) bool {
 	has := util.Contains(lp.VariableP.Name, variables)
 	if has {
-		return util.CanPerform(lp.VariableP.ActivationRate)
+		can := util.CanPerform(lp.VariableP.ActivationRate)
+		if can && ShouldPrint {
+			if file.Info == nil {
+				file.Info = &ds.PrintInfo{
+					PackageName:  "",
+					StructName:   "",
+					FuncName:     "",
+					VariableName: "",
+				}
+			}
+			file.Info.VariableName = lp.VariableP.Name
+			file.Info.FileName = file.FileName
+		}
+		return can
 	} else {
 		return false
 	}
 }
 
-func VariableCanInjure(lp *config.LocationPatternP, variable string) bool {
+func VariableCanInjure(file *ds.File, lp *config.LocationPatternP, variable string) bool {
 	has := lp.VariableP.Name == variable
 	if has {
-		return util.CanPerform(lp.VariableP.ActivationRate)
+		can := util.CanPerform(lp.VariableP.ActivationRate)
+		if can && ShouldPrint {
+			if file.Info == nil {
+				file.Info = &ds.PrintInfo{
+					PackageName:  "",
+					StructName:   "",
+					FuncName:     "",
+					VariableName: "",
+					FileName:     file.FileName,
+				}
+			}
+			file.Info.VariableName = lp.VariableP.Name
+			file.Info.FileName = file.FileName
+		}
+		return can
 	} else {
 		return false
 	}
@@ -110,7 +161,10 @@ func HasRunError(file *ds.File) (string, bool) {
 }
 
 func CreateFile(file *ds.File) error {
+	// 将trace也打印出来
 	code := util.GetFileCode(file.File)
+	OutInfo = append(OutInfo, []string{file.Info.FileName,
+		file.Info.PackageName, file.Info.StructName, file.Info.FuncName})
 	newPath := ""
 	if file.InputPath == file.OutputPath {
 		newPath = util.CompareAndExchange(file.FileName, file.OutputPath, file.OriInputPath)

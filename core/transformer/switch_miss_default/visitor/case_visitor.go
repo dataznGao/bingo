@@ -26,7 +26,7 @@ func (v *SwitchMissDefaultCaseVisitor) Visit(node ast.Node) ast.Visitor {
 		case *ast.SelectorExpr:
 			vari = ss.Tag.(*ast.SelectorExpr).Sel.Name
 		}
-		if transformer.VariableCanInjure(v.lp, vari) {
+		if transformer.VariableCanInjure(v.File, v.lp, vari) {
 			deleteBranch := -1
 			lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(ss))
 			for i, stmt := range ss.Body.List {

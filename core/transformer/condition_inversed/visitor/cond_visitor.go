@@ -19,7 +19,7 @@ type ConditionInversedCondVisitor struct {
 func (v *ConditionInversedCondVisitor) Visit(node ast.Node) ast.Visitor {
 	switch node.(type) {
 	case *ast.BinaryExpr:
-		if transformer.VariablesCanInjure(v.lp, transformer.GetVariable(node.(*ast.BinaryExpr))) {
+		if transformer.VariablesCanInjure(v.File, v.lp, transformer.GetVariable(node.(*ast.BinaryExpr))) {
 			lo := fmt.Sprintf("[bingo] INFO 变异位置: %v\n%v\n", v.File.FileName, util.GetNodeCode(node))
 			op := node.(*ast.BinaryExpr).Op
 			switch op {
