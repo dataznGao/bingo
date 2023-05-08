@@ -22,23 +22,24 @@ func (v *ExceptionUnhandledFuncVisitor) Visit(node ast.Node) ast.Visitor {
 		}
 		can := transformer.FunCanInjure(v.File, v.lp, structs, decl.Name.Name)
 		if can {
-			// 对函数段中不同的stmt进行单独处理
-			for _, stmt := range decl.Body.List {
+			if decl.Body != nil && decl.Body.List != nil {
+				// 对函数段中不同的stmt进行单独处理
+				for _, stmt := range decl.Body.List {
+					if ifStmt, ok := stmt.(*ast.IfStmt); ok {
+						visitor := &ExceptionUnhandledIfVisitor{
+							lp:   v.lp,
+							can:  false,
+							File: v.File,
+						}
+						ast.Walk(visitor, ifStmt)
 
-				if ifStmt, ok := stmt.(*ast.IfStmt); ok {
-					visitor := &ExceptionUnhandledIfVisitor{
-						lp:   v.lp,
-						can:  false,
-						File: v.File,
+					} else if caseStmt, ok := stmt.(*ast.SwitchStmt); ok {
+						visitor := &ExceptionUnhandledIfVisitor{
+							lp:   v.lp,
+							File: v.File,
+						}
+						ast.Walk(visitor, caseStmt)
 					}
-					ast.Walk(visitor, ifStmt)
-
-				} else if caseStmt, ok := stmt.(*ast.SwitchStmt); ok {
-					visitor := &ExceptionUnhandledIfVisitor{
-						lp:   v.lp,
-						File: v.File,
-					}
-					ast.Walk(visitor, caseStmt)
 				}
 			}
 		}
