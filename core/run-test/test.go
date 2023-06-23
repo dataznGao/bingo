@@ -13,8 +13,14 @@ func Test(testPath string, inputPath string) (string, error) {
 	if !strings.HasPrefix(testPath, inputPath) {
 		return "", errors.New("the testFile or inputPath set err! please check! err")
 	}
-	commend := "cd " + testPath + " && go test . -v -cover"
-	result, err := util.CommandTest(commend)
+	// 先把依赖搞定
+	commend := "cd " + inputPath + " && go mod tidy"
+	result, err := util.Command(commend)
+	if err != nil {
+		log.Fatalf("[bingo] ERROR go mod tidy fail, please check your inputPath !!, err: %v", err)
+	}
+	commend = "cd " + testPath + " && go test . -v -cover"
+	result, err = util.CommandTest(commend)
 	if err != nil {
 		log.Fatalf("[bingo] ERROR test fail, please check your testFile !!, err: %v", err)
 	}
