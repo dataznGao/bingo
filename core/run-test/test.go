@@ -19,7 +19,7 @@ func Test(testPath string, inputPath string) (string, error) {
 	if err != nil {
 		log.Fatalf("[bingo] ERROR go mod tidy fail, please check your inputPath !!, err: %v", err)
 	}
-	commend = "cd " + testPath + " && go test -v -cover"
+	commend = "cd " + testPath + " && go test -gcflags=\"-l\" -v -cover"
 	result, err = util.CommandTest(commend)
 	if err != nil {
 		log.Fatalf("[bingo] ERROR test fail, please check your testFile !!, err: %v", err)
