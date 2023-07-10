@@ -151,7 +151,12 @@ func HasRunError(file *ds.File) (string, bool) {
 	} else {
 		newPath = util.CompareAndExchange(file.FileName, file.OutputPath, file.InputPath)
 	}
-	command := "cd " + util.GetFather(newPath) + " && go build"
+	command := "cd " + file.OutputPath + " && go mod tidy"
+	_, err = util.Command(command)
+	if err != nil {
+		return newPath, true
+	}
+	command = "cd " + util.GetFather(newPath) + " && go build"
 	_, err = util.Command(command)
 	if err != nil {
 		return newPath, true
