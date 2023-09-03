@@ -45,6 +45,9 @@ const (
 
 var FaultTypeMap map[string]FaultType
 
+var InjuredSuccessCnt = 0
+var InjuredFailureCnt = 0
+
 func InitFaultTypeMap() {
 	FaultTypeMap = make(map[string]FaultType, 0)
 	FaultTypeMap[StrValueFault] = ValueFault

@@ -5,6 +5,7 @@ import (
 	"go/ast"
 	"io/fs"
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
 	"strings"
@@ -35,6 +36,50 @@ func LoadAllTestFile(path string) ([]string, error) {
 		return nil, err
 	}
 	return res, nil
+}
+
+func GetPackageName(inputPath string) string {
+	file, err := ioutil.ReadFile(inputPath + "/go.mod")
+	if err != nil {
+		panic(err)
+	}
+	res := ""
+	fileStr := string(file)
+	for i := range fileStr {
+		if i+6 == len(fileStr) {
+			log.Fatalf("[GetPackageName] can`t get package name, please check your inputPath: %v", inputPath)
+		}
+		if fileStr[i:i+6] == "module" {
+			start := i + 6
+			for start < len(fileStr) {
+				if fileStr[start] == ' ' {
+					start++
+				} else {
+					break
+				}
+			}
+			end := start
+			for end < len(fileStr) {
+				if fileStr[end] != '\n' {
+					end++
+				} else {
+					break
+				}
+			}
+			res = fileStr[start:end]
+			break
+		}
+	}
+
+	return strings.TrimSpace(res)
+}
+
+func ReadFile(filePath string) string {
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		panic(err)
+	}
+	return string(content)
 }
 
 func getAllTestFile(parent string, dir []fs.FileInfo, res *[]string) error {

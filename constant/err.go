@@ -13,3 +13,7 @@ func NewLocationPatternFormatError(message string) error {
 func NewProbabilityError(message string) error {
 	return errors.New("[ProbabilityError] this probability is wrong, please check your probability, make sure it is a fractional number and <= 1, location patter: " + message)
 }
+
+func NewCannotSolveError() error {
+	return errors.New("[NewCannotSolveError] this error can`t fix")
+}

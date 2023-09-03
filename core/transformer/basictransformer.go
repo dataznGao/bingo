@@ -1,6 +1,8 @@
 package transformer
 
 import (
+	"github.com/dataznGao/bingo/constant"
+	"github.com/dataznGao/bingo/core/clean"
 	"github.com/dataznGao/bingo/core/config"
 	"github.com/dataznGao/bingo/core/ds"
 	"github.com/dataznGao/bingo/util"
@@ -157,12 +159,23 @@ func HasRunError(file *ds.File) (string, bool) {
 		return newPath, true
 	}
 	command = "cd " + util.GetFather(newPath) + " && go build"
-	_, err = util.Command(command)
+	res, err := util.Command(command)
+	hasErr := false
 	if err != nil {
-		return newPath, true
+		cleaner := clean.ErrCleaner{Err: res, FileName: newPath}
+		err = cleaner.Fix()
+		// 修理了还是有错，给true
+		if err != nil {
+			hasErr = true
+		}
+	}
+	if hasErr {
+		constant.InjuredFailureCnt += 1
+	} else {
+		constant.InjuredSuccessCnt += 1
 	}
 	file.IsInjured = true
-	return newPath, false
+	return newPath, hasErr
 }
 
 func CreateFile(file *ds.File) error {

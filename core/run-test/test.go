@@ -13,7 +13,7 @@ func Test(testPath string, inputPath string) (string, error) {
 	if !strings.HasPrefix(testPath, inputPath) {
 		return "", errors.New("the testFile or inputPath set err! please check! err")
 	}
-	// 先把依赖搞定
+	// 解决项目依赖
 	commend := "cd " + inputPath + " && go mod tidy"
 	result, err := util.Command(commend)
 	if err != nil {

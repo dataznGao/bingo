@@ -89,8 +89,8 @@ func ShowLocateVariable(elem string, lp []*config.LocationPatternP) []*config.Lo
 func CanPerform(p string) bool {
 	var (
 		err error
-		a   int
-		b   int
+		bf  int
+		af  int
 	)
 	if strings.TrimSpace(p) == "1" {
 		return true
@@ -101,18 +101,18 @@ func CanPerform(p string) bool {
 		log.Fatal(constant.NewProbabilityError(p))
 		return false
 	}
-	a, err = strconv.Atoi(strings.TrimSpace(split[0]))
+	bf, err = strconv.Atoi(strings.TrimSpace(split[0]))
 	if err != nil {
 		log.Fatal(constant.NewProbabilityError(p))
 		return false
 	}
-	b, err = strconv.Atoi(strings.TrimSpace(split[1]))
+	af, err = strconv.Atoi(strings.TrimSpace(split[1]))
 	if err != nil {
 		log.Fatal(constant.NewProbabilityError(p))
 		return false
 	}
-	intn := rand.Intn(b)
-	if intn >= a {
+	intn := rand.Intn(af)
+	if intn >= bf {
 		return false
 	} else {
 		return true

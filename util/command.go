@@ -22,6 +22,7 @@ func Command(arg ...string) (string, error) {
 
 	//创建获取命令输出管道
 	stdout, err := cmd.StdoutPipe()
+	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		return result, err
 	}
@@ -33,15 +34,16 @@ func Command(arg ...string) (string, error) {
 
 	//读取所有输出
 	bytes, err := ioutil.ReadAll(stdout)
+	result = string(bytes)
+	errs, err := ioutil.ReadAll(stderr)
 	if err != nil {
-		return result, err
+		return string(errs), err
 	}
 
 	if err = cmd.Wait(); err != nil {
-		return result, err
+		return string(errs), err
 	}
 
-	result = string(bytes)
 	return result, nil
 }
 

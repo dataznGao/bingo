@@ -103,6 +103,9 @@ func entry(conf *config.Configuration) error {
 			}
 		}
 	}
-
+	log.Printf("[bingo] INFO 总共变异%v次, 变异成功%v次，变异失败%v次，故障注入率：%v\n",
+		constant.InjuredSuccessCnt+constant.InjuredFailureCnt,
+		constant.InjuredSuccessCnt, constant.InjuredFailureCnt,
+		float64(constant.InjuredFailureCnt)/float64(constant.InjuredSuccessCnt+constant.InjuredFailureCnt))
 	return nil
 }
