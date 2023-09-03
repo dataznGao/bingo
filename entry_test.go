@@ -18,7 +18,8 @@ func TestFaultPerformerFactory_Run(t *testing.T) {
 
 	env.SyncFault("*.*.*.*")
 	f := MutationPerformer{}
-	err := f.SetEnv(env).Run(true)
+	res, err := f.SetEnv(env).Run(true)
+	println(res)
 	if err != nil {
 		return
 	}

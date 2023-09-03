@@ -1,6 +1,7 @@
 package bingo
 
 import (
+	"fmt"
 	"github.com/dataznGao/bingo/constant"
 	"github.com/dataznGao/bingo/core"
 	"github.com/dataznGao/bingo/core/config"
@@ -23,19 +24,19 @@ func (f *MutationPerformer) SetEnv(env *MutationEnv) *MutationPerformer {
 }
 
 // Run 仅仅对inputPath中的进行变异，不进行测试
-func (f *MutationPerformer) Run(shouldPrint bool) error {
+func (f *MutationPerformer) Run(shouldPrint bool) (*MutationRes, error) {
 	transformer.ShouldPrint = shouldPrint
-	err := bingoMutationEntry(f._env)
+	res, err := bingoMutationEntry(f._env)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	util.DataToExcel(f._env.OutputPath+"/bingo_out_info.xlsx", transformer.OutInfo)
-	return nil
+	return res, nil
 }
 
 // Test 对inputPath中的进行变异测试，返回两次测试的结果对比
 func (f *MutationPerformer) Test(shouldPrint bool) error {
-	err := f.Run(shouldPrint)
+	_, err := f.Run(shouldPrint)
 	if err != nil {
 		return err
 	}
@@ -72,8 +73,20 @@ func (f *MutationPerformer) Test(shouldPrint bool) error {
 	return util.CreateFile(reportPath+constant.Separator+fileName, []byte(result))
 }
 
+type MutationRes struct {
+	MutationCnt        int64
+	MutationSuccessCnt int64
+	MutationFailureCnt int64
+	MutationRate       float64
+}
+
+func (m *MutationRes) Print() string {
+	return fmt.Sprintf("总共变异%v次, 变异成功%v次，变异失败%v次，故障注入率：%v\n",
+		m.MutationCnt, m.MutationSuccessCnt, m.MutationFailureCnt, m.MutationRate)
+}
+
 // 官方唯一默认指定入口
-func bingoMutationEntry(env *MutationEnv) error {
+func bingoMutationEntry(env *MutationEnv) (*MutationRes, error) {
 	conf := &config.Configuration{
 		InputPath:   env.InputPath,
 		OutputPath:  env.OutputPath,
@@ -82,16 +95,16 @@ func bingoMutationEntry(env *MutationEnv) error {
 	return entry(conf)
 }
 
-func entry(conf *config.Configuration) error {
+func entry(conf *config.Configuration) (*MutationRes, error) {
 	config.Config = conf
 	var err error
 	files, notGoFiles, err := core.LoadPackage(conf.InputPath)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	err = core.FillPackage(files, notGoFiles)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	log.Printf("[bingo] INFO ======= 开始变异 ========")
 	for filename, file := range files {
@@ -103,9 +116,12 @@ func entry(conf *config.Configuration) error {
 			}
 		}
 	}
-	log.Printf("[bingo] INFO 总共变异%v次, 变异成功%v次，变异失败%v次，故障注入率：%v\n",
-		constant.InjuredSuccessCnt+constant.InjuredFailureCnt,
-		constant.InjuredSuccessCnt, constant.InjuredFailureCnt,
-		float64(constant.InjuredFailureCnt)/float64(constant.InjuredSuccessCnt+constant.InjuredFailureCnt))
-	return nil
+	res := &MutationRes{
+		MutationCnt:        int64(constant.InjuredSuccessCnt + constant.InjuredFailureCnt),
+		MutationSuccessCnt: int64(constant.InjuredSuccessCnt),
+		MutationFailureCnt: int64(constant.InjuredFailureCnt),
+		MutationRate:       float64(constant.InjuredFailureCnt) / float64(constant.InjuredSuccessCnt+constant.InjuredFailureCnt),
+	}
+	log.Printf("[bingo] INFO %v", res.Print())
+	return res, nil
 }
