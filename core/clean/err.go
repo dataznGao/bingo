@@ -94,8 +94,9 @@ func (t *ErrCleaner) ConvertErrMsg() {
 			})
 
 		} else {
-			n := len(s)
+			n := len(prefix)
 			newPrefix := prefix
+
 			for i := 0; i < n; i++ {
 				if newPrefix[i] == '/' {
 					newPrefix = newPrefix[i+1:]
