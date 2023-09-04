@@ -181,9 +181,8 @@ func HasRunError(file *ds.File) (string, bool) {
 func CreateFile(file *ds.File) error {
 	// 将trace也打印出来
 	code := util.GetFileCode(file.File)
-	if OutInfo == nil {
-		OutInfo = make([][]string, 0)
-		OutInfo = append(OutInfo, []string{"file_name", "package_name", "struct_name", "function_name"})
+	if file.Info == nil {
+		file.Info = &ds.PrintInfo{}
 	}
 	OutInfo = append(OutInfo, []string{file.Info.FileName,
 		file.Info.PackageName, file.Info.StructName, file.Info.FuncName})
