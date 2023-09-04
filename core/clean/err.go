@@ -10,8 +10,8 @@ import (
 )
 
 // # github.com/douyu/jupiter/pkg/executor/xxl
-//./task.go:76:7: undefined: err
-//./task.go:79:52: undefined: err
+// ./task.go:76:7: undefined: err
+// ./task.go:79:52: undefined: err
 type ErrCleaner struct {
 	Err string
 	// 错误类型以及文件名和错误位置
@@ -38,6 +38,13 @@ func (t *ErrCleaner) ConvertErrMsg() {
 	t.position = make(map[string]map[ErrType][]*Pos)
 
 	split := strings.Split(t.Err, "\n")
+	if strings.HasPrefix(t.Err, "go: updates to go.mod needed; to update it:") {
+		str, err := util.Command("cd " + util.GetFather(t.FileName) + " && go mod tidy")
+		if err != nil {
+			println(str)
+			return
+		}
+	}
 	prefix := ""
 	packageName := util.GetPackageName(config.Config.OutputPath)
 	for _, s := range split {

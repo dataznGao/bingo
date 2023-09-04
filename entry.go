@@ -120,7 +120,7 @@ func entry(conf *config.Configuration) (*MutationRes, error) {
 		MutationCnt:        int64(constant.InjuredSuccessCnt + constant.InjuredFailureCnt),
 		MutationSuccessCnt: int64(constant.InjuredSuccessCnt),
 		MutationFailureCnt: int64(constant.InjuredFailureCnt),
-		MutationRate:       float64(constant.InjuredFailureCnt) / float64(constant.InjuredSuccessCnt+constant.InjuredFailureCnt),
+		MutationRate:       float64(constant.InjuredSuccessCnt) / float64(constant.InjuredSuccessCnt+constant.InjuredFailureCnt),
 	}
 	log.Printf("[bingo] INFO %v", res.Print())
 	return res, nil
