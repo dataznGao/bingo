@@ -164,6 +164,9 @@ func (t *ErrCleaner) Fix() error {
 
 // OneFix 需要以文件为粒度，内部进行错误的划分
 func (t *ErrCleaner) OneFix() error {
+	if len(t.position) == 0 {
+		return constant.NewCannotSolveError()
+	}
 	var err error
 	for fileName, m := range t.position {
 		for errType, pos := range m {

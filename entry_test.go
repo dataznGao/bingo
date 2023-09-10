@@ -3,8 +3,8 @@ package bingo
 import "testing"
 
 func TestFaultPerformerFactory_Run(t *testing.T) {
-	env := CreateMutationEnv("/Users/misery/GolandProjects/jupiter",
-		"/Users/misery/GolandProjects/tmp_enhance",
+	env := CreateMutationEnv("/Users/misery/GolandProjects/gochat",
+		"/Users/misery/GolandProjects/gochat2",
 		"/Users/misery/GolandProjects/jupiter/test/e2e")
 	//env.ConditionInversedFault("*.*.*.*")
 	//env.NullFault("*.*.*.a")
